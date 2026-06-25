@@ -7,7 +7,8 @@ Visual assets for README, GitHub social preview, and contributor docs.
 | [hero-banner.png](./hero-banner.png) | 16:9 | Repository hero — VocalIQ branding, pitch lane, score ring |
 | [dashboard-screen.png](./dashboard-screen.png) | wide | Dashboard UI preview — KPIs and quick actions |
 | [practice-screen.png](./practice-screen.png) | mobile | Practice studio — pitch meter and score ring |
-| [architecture.svg](./architecture.svg) | vector | Client · optional API · deploy diagram |
+| [architecture.png](./architecture.png) | vector / PNG | Client · optional API · deploy diagram |
+| [architecture.svg](./architecture.svg) | vector | Editable source (view locally; not shown on GitHub README) |
 | [app-icon.png](./app-icon.png) | square | App icon used in docs |
 
 ## Usage in README

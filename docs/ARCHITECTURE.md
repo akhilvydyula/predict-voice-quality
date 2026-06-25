@@ -2,7 +2,9 @@
 
 VocalIQ is an Expo (React Native) app with optional Express API and static web deployment.
 
-![System architecture](./images/architecture.svg)
+![System architecture](./images/architecture.png)
+
+> GitHub does not render SVG in README files. Use `architecture.png` for docs, or view `architecture.svg` locally.
 
 ## Client layers
 

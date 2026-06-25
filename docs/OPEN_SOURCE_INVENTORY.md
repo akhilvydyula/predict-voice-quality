@@ -104,7 +104,8 @@ All marketing and documentation visuals live in [`docs/images/`](./images/).
 | `hero-banner.png` | README hero / social preview |
 | `dashboard-screen.png` | Dashboard feature preview |
 | `practice-screen.png` | Live practice feature preview |
-| `architecture.svg` | System architecture diagram |
+| `architecture.png` | System architecture diagram (GitHub README) |
+| `architecture.svg` | Editable architecture source (local / docs) |
 | `app-icon.png` | App icon (copy of `assets/icon.png`) |
 
 ### App store / build assets (`assets/`)

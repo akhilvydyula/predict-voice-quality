@@ -130,7 +130,31 @@ Scoring logic lives in [`src/audio/voiceQuality.ts`](src/audio/voiceQuality.ts).
 
 ## Architecture
 
-![VocalIQ system architecture](./docs/images/architecture.svg)
+![VocalIQ system architecture](./docs/images/architecture.png)
+
+```mermaid
+flowchart LR
+  subgraph client["Expo Client · Web / iOS / Android"]
+    UI["Landing · Dashboard · Practice"]
+    Audio["YIN pitch · Voice metrics · Coach"]
+    Store["Local session storage"]
+    Mic["Microphone · on-device analysis"]
+  end
+
+  subgraph api["Optional API · server/"]
+    Express["Express REST"]
+    Sync["Profile & session sync"]
+  end
+
+  subgraph deploy["Deploy & CI"]
+    CF["Cloudflare Pages"]
+    GHA["GitHub Actions"]
+    EAS["EAS Build"]
+  end
+
+  client -->|"optional sync"| api
+  client -->|"build & deploy"| deploy
+```
 
 Details: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
