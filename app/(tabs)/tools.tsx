@@ -67,7 +67,6 @@ export default function ToolsScreen() {
         ]}
         active={tab}
         onChange={setTab}
-        scrollable
       />
 
       <Panel variant="elevated" padding={spacing.xl}>

@@ -10,6 +10,7 @@ type SegmentedTabsProps<T extends string> = {
   tabs: { key: T; label: string }[];
   active: T;
   onChange: (key: T) => void;
+  /** Force horizontal scroll (e.g. many tabs on a narrow strip). */
   scrollable?: boolean;
 };
 
@@ -19,75 +20,106 @@ export function SegmentedTabs<T extends string>({
   onChange,
   scrollable = false,
 }: SegmentedTabsProps<T>) {
-  const content = tabs.map((tab) => {
-    const selected = tab.key === active;
-    return (
-      <Pressable
-        key={tab.key}
-        onPress={() => {
-          void Haptics.selectionAsync();
-          onChange(tab.key);
-        }}
-        style={[styles.tab, scrollable && styles.tabScrollable, selected && styles.tabActive]}
-      >
-        <Text style={[styles.label, selected && styles.labelActive]} numberOfLines={1}>
-          {tab.label}
-        </Text>
-      </Pressable>
-    );
-  });
+  const wide = tabs.length > 3;
 
-  if (scrollable) {
+  const renderTabs = () =>
+    tabs.map((tab) => {
+      const selected = tab.key === active;
+      return (
+        <Pressable
+          key={tab.key}
+          onPress={() => {
+            void Haptics.selectionAsync();
+            onChange(tab.key);
+          }}
+          style={[
+            styles.tab,
+            wide ? styles.tabWide : scrollable ? styles.tabScrollable : styles.tabCompact,
+            selected && styles.tabActive,
+          ]}
+        >
+          <Text
+            style={[styles.label, wide && styles.labelWide, selected && styles.labelActive]}
+            numberOfLines={1}
+          >
+            {tab.label}
+          </Text>
+        </Pressable>
+      );
+    });
+
+  if (scrollable && !wide) {
     return (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollTrack}
-      >
-        {content}
-      </ScrollView>
+      <View style={styles.scrollOuter}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {renderTabs()}
+        </ScrollView>
+      </View>
     );
   }
 
-  return <View style={styles.track}>{content}</View>;
+  return (
+    <View style={[styles.track, wide ? styles.trackWide : styles.trackCompact]}>
+      {renderTabs()}
+    </View>
+  );
 }
 
+const trackShell = {
+  flexDirection: 'row' as const,
+  backgroundColor: colors.surfaceElevated,
+  borderRadius: radius.md,
+  padding: spacing.xs,
+  borderWidth: 1,
+  borderColor: colors.border,
+};
+
 const styles = StyleSheet.create({
-  track: {
-    flexDirection: 'row',
+  track: trackShell,
+  trackCompact: {
     alignSelf: 'center',
     width: '100%',
     maxWidth: layout.maxSegmentedWidth,
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.md,
+  },
+  trackWide: {
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  scrollOuter: {
+    width: '100%',
+    alignSelf: 'stretch',
+    ...trackShell,
+    padding: 0,
+  },
+  scrollContent: {
+    flexDirection: 'row',
+    gap: spacing.xs,
     padding: spacing.xs,
-    borderWidth: 1,
-    borderColor: colors.border,
   },
   tab: {
-    flex: 1,
-    minHeight: 38,
+    minHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.sm,
+  },
+  tabCompact: {
+    flex: 1,
     paddingHorizontal: spacing.sm,
   },
-  tabScrollable: {
-    flex: 0,
-    minWidth: 80,
-    paddingHorizontal: spacing.md,
+  tabWide: {
+    flex: 1,
+    minWidth: 0,
+    paddingHorizontal: spacing.xs,
   },
-  scrollTrack: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: layout.maxSegmentedWidth,
-    gap: spacing.xs,
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.md,
-    padding: spacing.xs,
-    borderWidth: 1,
-    borderColor: colors.border,
+  tabScrollable: {
+    flexGrow: 0,
+    flexShrink: 0,
+    minWidth: 72,
+    paddingHorizontal: spacing.md,
   },
   tabActive: {
     backgroundColor: colors.surface,
@@ -99,6 +131,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     fontFamily: typography.bodyMedium.fontFamily,
+    textAlign: 'center',
+  },
+  labelWide: {
+    fontSize: 12,
   },
   labelActive: {
     color: colors.text,
