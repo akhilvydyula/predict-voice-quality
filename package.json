@@ -1,6 +1,28 @@
 {
   "name": "predict-voice-quality",
   "version": "1.0.0",
+  "description": "VocalIQ — open-source real-time vocal training with pitch feedback, scoring, coaching, and analytics (Expo / React Native)",
+  "license": "MIT",
+  "author": "Akhil Vydyula (https://github.com/akhilvydyula)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akhilvydyula/predict-voice-quality.git"
+  },
+  "homepage": "https://predict-voice-quality.pages.dev",
+  "bugs": {
+    "url": "https://github.com/akhilvydyula/predict-voice-quality/issues"
+  },
+  "keywords": [
+    "vocal-training",
+    "pitch-detection",
+    "singing",
+    "voice-analysis",
+    "expo",
+    "react-native",
+    "open-source",
+    "music-education",
+    "yin-algorithm"
+  ],
   "main": "expo-router/entry",
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",
@@ -45,6 +67,5 @@
     "api": "npm run dev --prefix server",
     "api:build": "npm run build --prefix server",
     "api:start": "npm run start --prefix server"
-  },
-  "private": true
+  }
 }

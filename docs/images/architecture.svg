@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-label="VocalIQ architecture diagram">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F7F8FA"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1F2329" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="960" height="420" rx="16" fill="url(#bg)" stroke="#E5E6EB"/>
+  <text x="480" y="36" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="700" fill="#1F2329">VocalIQ  System Architecture</text>
+
+  <!-- Client -->
+  <g filter="url(#shadow)">
+    <rect x="40" y="70" width="260" height="300" rx="12" fill="#FFFFFF" stroke="#E5E6EB"/>
+    <text x="170" y="98" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0066FF">Expo Client (Web / iOS / Android)</text>
+    <rect x="60" y="118" width="220" height="44" rx="8" fill="#E8F3FF" stroke="#0066FF" stroke-opacity="0.3"/>
+    <text x="170" y="145" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#1F2329">Landing · Dashboard · Practice</text>
+    <rect x="60" y="174" width="220" height="44" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="170" y="201" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">YIN pitch · Voice metrics · Coach</text>
+    <rect x="60" y="230" width="220" height="44" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="170" y="257" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">AsyncStorage / local session store</text>
+    <rect x="60" y="286" width="220" height="44" rx="8" fill="#E8F8EE" stroke="#00C853" stroke-opacity="0.35"/>
+    <text x="170" y="313" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#1F2329">Microphone  on-device analysis</text>
+  </g>
+
+  <!-- Optional API -->
+  <g filter="url(#shadow)">
+    <rect x="350" y="120" width="260" height="200" rx="12" fill="#FFFFFF" stroke="#E5E6EB"/>
+    <text x="480" y="148" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0066FF">Optional API (server/)</text>
+    <text x="480" y="168" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" fill="#8F959E">Express · profile sync · session backup</text>
+    <rect x="370" y="186" width="220" height="36" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="480" y="209" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">GET/POST /profile · /sessions</text>
+    <rect x="370" y="234" width="220" height="36" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="480" y="257" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">Optional API_KEY auth</text>
+    <rect x="370" y="272" width="220" height="32" rx="8" fill="#FFF8EB" stroke="#F59E0B" stroke-opacity="0.4"/>
+    <text x="480" y="293" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" fill="#646A73">Not required for core practice</text>
+  </g>
+
+  <!-- Deploy -->
+  <g filter="url(#shadow)">
+    <rect x="660" y="70" width="260" height="300" rx="12" fill="#FFFFFF" stroke="#E5E6EB"/>
+    <text x="790" y="98" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0066FF">Deploy &amp; CI</text>
+    <rect x="680" y="118" width="220" height="44" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="790" y="145" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">Cloudflare Pages (static web)</text>
+    <rect x="680" y="174" width="220" height="44" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="790" y="201" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">GitHub Actions workflow</text>
+    <rect x="680" y="230" width="220" height="44" rx="8" fill="#F7F8FA" stroke="#E5E6EB"/>
+    <text x="790" y="257" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#646A73">EAS Build (iOS / Android)</text>
+    <rect x="680" y="286" width="220" height="44" rx="8" fill="#E8F3FF" stroke="#0066FF" stroke-opacity="0.3"/>
+    <text x="790" y="313" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#1F2329">expo export --platform web</text>
+  </g>
+
+  <!-- Arrows -->
+  <path d="M300 200 H350" stroke="#0066FF" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M610 200 H660" stroke="#8F959E" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="325" y="188" font-family="Segoe UI, system-ui, sans-serif" font-size="10" fill="#8F959E">sync</text>
+  <text x="625" y="188" font-family="Segoe UI, system-ui, sans-serif" font-size="10" fill="#8F959E">build</text>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#0066FF"/>
+    </marker>
+  </defs>
+</svg>

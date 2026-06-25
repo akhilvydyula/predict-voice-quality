@@ -1,73 +1,191 @@
-# Voice Quality — Mobile App
+# VocalIQ
 
-Real-time singing analysis for **iOS** and **Android**. Measures pitch accuracy, stability, breath control, and tone clarity while you sing.
+**Open-source real-time vocal training** — pitch feedback, voice scoring, coaching, analytics, and singer tools. Runs in the browser and on iOS/Android via Expo.
 
-## What it does
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Expo SDK](https://img.shields.io/badge/Expo-SDK%2056-000020?logo=expo)](https://expo.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Live demo](https://img.shields.io/badge/demo-live-0066FF)](https://predict-voice-quality.pages.dev)
 
-- **Live pitch meter** — shows current note, Hz, and sharp/flat in cents
-- **Overall voice score** — weighted blend of four singing dimensions
-- **Coaching tips** — suggests what to improve based on your weakest metric
-- **On-device processing** — microphone audio is analyzed on your phone (not sent to a server)
+![VocalIQ — real-time vocal training, open source](./docs/images/hero-banner.png)
 
-## Requirements
+**[Try it live](https://predict-voice-quality.pages.dev)** · **[Open source inventory](./docs/OPEN_SOURCE_INVENTORY.md)** · **[Architecture](./docs/ARCHITECTURE.md)**
 
-- [Node.js](https://nodejs.org/) 18+
-- [Expo Go](https://expo.dev/go) on your **iPhone or Android phone**
-- A computer on the same Wi‑Fi network (for development)
+---
 
-> **Note:** Live microphone streaming uses native `expo-audio` APIs. It works on a physical phone via Expo Go; it does **not** work in the web preview.
+## What is VocalIQ?
 
-## Run on your phone
+VocalIQ helps singers practice with **instant, on-device feedback**. Sing into your microphone and see:
 
-1. Install dependencies:
+- Live **pitch meter** (note, Hz, sharp/flat in cents)
+- **Overall score** and skill breakdown
+- **Coaching tips** based on your weakest dimension
+- **Session history**, trends, and streaks
+- **Toolkit**: tuner, metronome, scales, breath coach
 
-   ```bash
-   npm install
-   ```
+Audio is analyzed **on your device** — nothing is uploaded unless you configure the optional API.
 
-2. Start the dev server:
+<p align="center">
+  <img src="./docs/images/dashboard-screen.png" alt="VocalIQ dashboard — sessions, scores, and quick actions" width="48%" />
+  &nbsp;
+  <img src="./docs/images/practice-screen.png" alt="VocalIQ practice screen — live pitch and score ring" width="28%" />
+</p>
 
-   ```bash
-   npm start
-   ```
+---
 
-3. Scan the QR code with **Expo Go** (Android) or the **Camera** app (iOS).
+## Features
 
-4. Open **Start Live Session**, allow microphone access, and sing.
+| Area | Highlights |
+|------|------------|
+| **Practice** | YIN pitch detection, live pitch lane, score ring, metric cards |
+| **Progress** | Trend charts, skill breakdown, session history |
+| **Coach** | Practice plans, milestones, AI-style coaching agent |
+| **Tools** | Chromatic tuner, metronome, scale guide, breath coach, range map |
+| **Web** | Full experience in modern browsers (mic permission required) |
+| **Mobile** | Expo Go or EAS builds for iOS/Android |
+
+---
+
+## Quick start
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 20+
+- npm 9+
+- Microphone access (browser or device)
+
+### Install & run (web)
+
+```bash
+git clone https://github.com/akhilvydyula/predict-voice-quality.git
+cd predict-voice-quality
+npm install
+npm run web
+```
+
+Open the URL shown in the terminal (usually `http://localhost:8081`), go to **Practice**, and allow microphone access.
+
+### Run on phone (Expo Go)
+
+```bash
+npm start
+```
+
+Scan the QR code with **Expo Go** (Android) or **Camera** (iOS).
+
+### Optional API server
+
+```bash
+npm install --prefix server
+npm run api          # dev server on :3001
+```
+
+Set `EXPO_PUBLIC_API_URL=http://localhost:3001` if you want profile/session sync.
+
+### Production web build
+
+```bash
+npm run build:web
+# Output in dist/ — deploy to Cloudflare Pages, Netlify, etc.
+npm run deploy:cloudflare   # requires Wrangler auth
+```
+
+---
 
 ## Project structure
 
 ```
-app/
-  index.tsx      # Home — what we measure
-  session.tsx    # Live singing session
-src/
-  audio/         # Pitch detection (YIN) + scoring
-  hooks/         # useVoiceAnalysis
-  components/    # Pitch meter, metrics, score ring
+predict-voice-quality/
+├── app/                 # Expo Router screens
+├── src/
+│   ├── audio/           # Pitch detection & voice scoring
+│   ├── components/      # UI, charts, landing, tools
+│   ├── hooks/           # useVoiceAnalysis, metronome, breath
+│   ├── agent/           # Coaching agent & singer profile
+│   ├── analytics/       # Dashboard metrics
+│   ├── storage/         # Local persistence
+│   └── theme/           # Design tokens
+├── server/              # Optional Express API
+├── docs/                # Architecture, inventory, images
+├── assets/              # App icons & splash
+└── scripts/             # Cloudflare dist preparation
 ```
+
+---
 
 ## Voice quality dimensions
 
 | Metric | What we measure |
 |--------|-----------------|
-| Pitch | How close notes are to correct pitch (cents) |
-| Stability | Steadiness when holding notes |
-| Breath | Even volume / support through phrases |
-| Tone | Signal clarity (harmonic confidence) |
+| **Pitch** | Closeness to correct pitch (cents) |
+| **Stability** | Steadiness when holding notes |
+| **Breath** | Even volume / support |
+| **Tone** | Signal clarity (harmonic confidence) |
+| **Vibrato** | Controlled pitch oscillation |
+| **Dynamics** | Expressive volume range |
 
-## Next steps (roadmap)
+Scoring logic lives in [`src/audio/voiceQuality.ts`](src/audio/voiceQuality.ts).
 
-- Song mode — compare against a reference melody
-- Vibrato and dynamics analysis
-- Session history and progress charts
-- Standalone builds via EAS (`eas build`)
+---
 
-## Build for production
+## Architecture
 
-```bash
-npx eas build --platform android
-npx eas build --platform ios
-```
+![VocalIQ system architecture](./docs/images/architecture.svg)
 
-You’ll need an [Expo account](https://expo.dev/signup) and EAS CLI for store-ready builds.
+Details: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
+---
+
+## Open source
+
+This project is **MIT licensed** — free to use, modify, and distribute.
+
+| Resource | Link |
+|----------|------|
+| Full inventory (code, docs, images, deps) | [docs/OPEN_SOURCE_INVENTORY.md](./docs/OPEN_SOURCE_INVENTORY.md) |
+| Third-party licenses | [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) |
+| Contributing | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+| Code of conduct | [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) |
+| Security | [SECURITY.md](./SECURITY.md) |
+
+---
+
+## Deploy your own instance
+
+**Cloudflare Pages** (used by the live demo):
+
+1. Fork this repo
+2. Connect to Cloudflare Pages
+3. Build command: `npm run build:web`
+4. Output directory: `dist`
+5. Add GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` for CI, or deploy manually with Wrangler
+
+See [`.github/workflows/deploy-cloudflare.yml`](.github/workflows/deploy-cloudflare.yml).
+
+---
+
+## Roadmap
+
+- [ ] Song mode with reference melody comparison
+- [ ] Export session data (CSV/JSON)
+- [ ] Persistent API store (Postgres / SQLite)
+- [ ] EAS store builds with signed releases
+- [ ] i18n / localization
+
+Contributions welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+---
+
+## License
+
+Copyright © 2026 [Akhil Vydyula](https://github.com/akhilvydyula)
+
+Released under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  <img src="./docs/images/app-icon.png" alt="VocalIQ app icon" width="72" />
+  <br />
+  <strong>VocalIQ</strong> — vocal training, visualized.
+</p>
