@@ -26,7 +26,7 @@ function TabNavigator() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, size, focused }) => (
