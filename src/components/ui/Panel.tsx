@@ -20,14 +20,21 @@ export function Panel({
   title,
   subtitle,
   headerRight,
-  padding = spacing.lg,
+  padding = spacing.xl,
   style,
   variant = 'default',
 }: PanelProps) {
   const hasHeader = Boolean(title || subtitle || headerRight);
 
   return (
-    <View style={[styles.base, variant === 'elevated' && styles.elevated, variant === 'inset' && styles.inset, style]}>
+    <View
+      style={[
+        styles.base,
+        variant === 'elevated' && styles.elevated,
+        variant === 'inset' && styles.inset,
+        style,
+      ]}
+    >
       {hasHeader ? (
         <View style={[styles.header, { paddingHorizontal: padding, paddingTop: padding }]}>
           <View style={styles.headerCopy}>
@@ -44,7 +51,7 @@ export function Panel({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surface,
@@ -56,6 +63,7 @@ const styles = StyleSheet.create({
   },
   inset: {
     backgroundColor: colors.backgroundElevated,
+    borderColor: colors.border,
   },
   header: {
     flexDirection: 'row',
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
   },
   headerCopy: {
     flex: 1,
-    gap: 2,
+    gap: 3,
   },
   title: {
     ...typography.h3,

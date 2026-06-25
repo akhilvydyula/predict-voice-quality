@@ -24,7 +24,7 @@ export function EmptyState({
   return (
     <View style={styles.wrap}>
       <View style={styles.iconWrap}>
-        <Ionicons name={icon} size={32} color={colors.primaryBright} />
+        <Ionicons name={icon} size={32} color={colors.primary} />
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
@@ -43,8 +43,8 @@ export function EmptyState({
 const styles = StyleSheet.create({
   wrap: {
     alignItems: 'center',
-    paddingVertical: spacing.xxxl,
-    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.section,
+    paddingHorizontal: spacing.xxl,
     gap: spacing.md,
   },
   iconWrap: {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     backgroundColor: colors.primarySoft,
     borderWidth: 1,
-    borderColor: `${colors.primaryBright}33`,
+    borderColor: `${colors.primary}33`,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.xs,
@@ -65,11 +65,12 @@ const styles = StyleSheet.create({
   description: {
     ...typography.body,
     textAlign: 'center',
-    maxWidth: 340,
+    maxWidth: 320,
     lineHeight: 22,
   },
   cta: {
     marginTop: spacing.sm,
+    alignSelf: 'center',
     minWidth: 200,
   },
 });

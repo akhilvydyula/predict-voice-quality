@@ -34,7 +34,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     subtitle: 'Live pitch & coaching',
     icon: 'mic',
     route: '/session',
-    accent: colors.primaryBright,
+    accent: colors.primary,
   },
   {
     key: 'analytics',
@@ -42,7 +42,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     subtitle: 'Charts & history',
     icon: 'bar-chart',
     route: '/analytics',
-    accent: colors.accent,
+    accent: '#06B6D4',
   },
   {
     key: 'tools',
@@ -58,7 +58,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     subtitle: 'Plans & milestones',
     icon: 'school',
     route: '/coach',
-    accent: colors.warning,
+    accent: colors.accent,
   },
 ];
 
@@ -122,7 +122,7 @@ export default function DashboardScreen() {
               label="Sessions"
               value={metrics.totalSessions}
               hint={`${metrics.weekSessions} this week`}
-              accent={colors.primaryBright}
+              accent={colors.primary}
             />
             <KpiCard
               label="Avg score"
@@ -141,13 +141,13 @@ export default function DashboardScreen() {
               label="Practice time"
               value={metrics.totalMinutes ? `${metrics.totalMinutes}m` : '—'}
               hint="Total lifetime"
-              accent={colors.accent}
+              accent="#06B6D4"
             />
             <KpiCard
               label="Streak"
               value={metrics.practiceStreak ? `${metrics.practiceStreak}d` : '—'}
               hint="Consecutive days"
-              accent={colors.warning}
+              accent={colors.accent}
             />
           </View>
         </Pressable>

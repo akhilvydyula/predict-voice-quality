@@ -46,19 +46,19 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.h1,
-    fontSize: 26,
   },
   subtitle: {
     ...typography.body,
     maxWidth: 560,
-    lineHeight: 22,
   },
   meta: {
     ...typography.bodySmall,
     color: colors.textDim,
+    marginTop: spacing.xs,
   },
   actions: {
     alignItems: 'flex-end',
     justifyContent: 'center',
+    paddingTop: 2,
   },
 });

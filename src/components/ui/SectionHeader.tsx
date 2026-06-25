@@ -35,15 +35,15 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   title: {
-    ...typography.h2,
-    fontSize: 18,
+    ...typography.h3,
+    fontSize: 16,
   },
   subtitle: {
     ...typography.bodySmall,
   },
   action: {
     ...typography.caption,
-    color: colors.primaryBright,
+    color: colors.primary,
     letterSpacing: 0.6,
   },
 });

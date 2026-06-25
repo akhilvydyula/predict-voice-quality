@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.border,
-    padding: spacing.lg,
+    padding: spacing.xl,
     gap: spacing.xs,
     overflow: 'hidden',
   },
@@ -51,14 +51,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radius.md,
   },
   label: {
-    ...typography.overline,
-    color: colors.textMuted,
+    ...typography.caption,
     marginTop: 4,
   },
   value: {
-    ...typography.metric,
-    fontSize: 32,
+    fontFamily: typography.metric.fontFamily,
+    fontSize: 30,
     lineHeight: 36,
+    letterSpacing: -0.5,
+    color: colors.text,
   },
   delta: {
     ...typography.bodySmall,

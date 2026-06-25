@@ -8,6 +8,8 @@ import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 
+const TAB_BAR_HEIGHT = spacing.tabBar; // 62px
+
 function TabNavigator() {
   const { enabled } = useDevMode();
 
@@ -15,7 +17,7 @@ function TabNavigator() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primaryBright,
+        tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textDim,
         tabBarLabelStyle: styles.tabLabel,
         tabBarStyle: styles.tabBar,
@@ -111,13 +113,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.border,
     backgroundColor: 'transparent',
-    height: spacing.tabBar,
+    height: TAB_BAR_HEIGHT,
     paddingTop: spacing.sm,
-    paddingBottom: Platform.OS === 'ios' ? spacing.lg : spacing.sm,
+    paddingBottom: Platform.OS === 'ios' ? spacing.md : spacing.sm,
   },
   tabBarBg: {
     backgroundColor: colors.tabBar,
-    backdropFilter: 'blur(16px)',
   },
   tabItem: {
     paddingTop: 2,

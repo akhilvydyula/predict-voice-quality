@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors } from '../../theme/colors';
@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     alignItems: 'center',
-    paddingBottom: spacing.tabBar + spacing.xxxl + spacing.lg,
+    paddingBottom: spacing.tabBar + spacing.xxxl + spacing.xl,
   },
   padded: {
     width: '100%',
     maxWidth: layout.maxContentWidth,
-    paddingHorizontal: spacing.screen,
+    paddingHorizontal: Platform.OS === 'web' ? spacing.xl : spacing.screen,
     paddingTop: spacing.lg,
     gap: spacing.lg,
   },

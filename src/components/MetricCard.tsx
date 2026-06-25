@@ -14,6 +14,15 @@ const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   dynamics: 'trending-up-outline',
 };
 
+const ACCENT_COLORS: Record<string, string> = {
+  pitch: colors.primary,
+  stability: colors.success,
+  breath: colors.accent,
+  tone: '#A78BFA',
+  vibrato: colors.warning,
+  dynamics: '#06B6D4',
+};
+
 type MetricCardProps = {
   label: string;
   value: number;
@@ -21,18 +30,25 @@ type MetricCardProps = {
 };
 
 export function MetricCard({ label, value, icon }: MetricCardProps) {
-  const iconName = ICONS[label.toLowerCase()] ?? 'analytics-outline';
-  const barColor =
-    value >= 75 ? colors.success : value >= 50 ? colors.warning : colors.danger;
+  const key = label.toLowerCase();
+  const iconName = ICONS[key] ?? 'analytics-outline';
+  const accent = ACCENT_COLORS[key] ?? colors.primaryBright;
+  const barColor = value >= 75 ? colors.success : value >= 50 ? colors.warning : colors.danger;
   const hasValue = value > 0;
 
   return (
     <View style={styles.card}>
       <View style={styles.topRow}>
-        <View style={styles.iconWrap}>
-          <Ionicons name={icon ? (icon as keyof typeof Ionicons.glyphMap) : iconName} size={16} color={colors.primaryBright} />
+        <View style={[styles.iconWrap, { backgroundColor: `${accent}1A`, borderColor: `${accent}33` }]}>
+          <Ionicons
+            name={icon ? (icon as keyof typeof Ionicons.glyphMap) : iconName}
+            size={20}
+            color={accent}
+          />
         </View>
-        <Text style={styles.value}>{hasValue ? value : '—'}</Text>
+        <Text style={[styles.value, hasValue && { color: colors.text }]}>
+          {hasValue ? value : '—'}
+        </Text>
       </View>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.track}>
@@ -54,7 +70,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surfaceElevated,
     borderRadius: radius.md,
-    padding: spacing.lg,
+    padding: spacing.xl,
     borderWidth: 1,
     borderColor: colors.border,
     flex: 1,
@@ -67,25 +83,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconWrap: {
-    width: 34,
-    height: 34,
-    borderRadius: radius.sm,
-    backgroundColor: colors.primarySoft,
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
   },
   value: {
-    ...typography.h1,
-    fontSize: 28,
+    fontFamily: typography.metric.fontFamily,
+    fontSize: 26,
+    lineHeight: 30,
+    color: colors.textMuted,
   },
   label: {
-    ...typography.bodySmall,
+    ...typography.caption,
     color: colors.textSecondary,
+    letterSpacing: 0.8,
   },
   track: {
-    height: 6,
+    height: 5,
     borderRadius: radius.pill,
     backgroundColor: colors.backgroundElevated,
     overflow: 'hidden',

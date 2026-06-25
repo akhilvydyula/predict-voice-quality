@@ -35,7 +35,7 @@ export function PrimaryButton({
       <Pressable
         onPress={handlePress}
         disabled={disabled}
-        style={({ pressed }) => [styles.ghost, pressed && styles.pressed, style]}
+        style={({ pressed }) => [styles.ghost, pressed && styles.ghostPressed, disabled && styles.disabled, style]}
       >
         <Text style={[styles.ghostLabel, disabled && styles.disabledText]}>{label}</Text>
       </Pressable>
@@ -43,14 +43,12 @@ export function PrimaryButton({
   }
 
   const variantStyle =
-    variant === 'danger'
-      ? styles.danger
-      : variant === 'secondary'
-        ? styles.secondary
-        : styles.primary;
+    variant === 'danger' ? styles.danger
+    : variant === 'secondary' ? styles.secondary
+    : styles.primary;
 
-  const labelColor =
-    variant === 'secondary' ? colors.textSecondary : colors.text;
+  const labelStyle =
+    variant === 'secondary' ? styles.labelSecondary : styles.labelPrimary;
 
   return (
     <Pressable
@@ -60,49 +58,60 @@ export function PrimaryButton({
         styles.wrap,
         variantStyle,
         pressed && styles.pressed,
-        disabled && styles.disabledBg,
+        disabled && styles.disabled,
         style,
       ]}
     >
-      <Text style={[styles.label, { color: labelColor }, disabled && styles.disabledText]}>
+      <Text style={[styles.label, labelStyle, disabled && styles.disabledText]}>
         {label}
       </Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      {subtitle ? <Text style={[styles.subtitle, variant === 'secondary' ? styles.subtitleSecondary : {}]}>{subtitle}</Text> : null}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
     minHeight: 52,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xxxl,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
   },
   primary: {
     backgroundColor: colors.primary,
-    borderColor: colors.primaryBright,
+    borderColor: '#0052CC',
   },
   secondary: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: 'transparent',
     borderColor: colors.borderStrong,
+    borderWidth: 2,
   },
   danger: {
     backgroundColor: colors.danger,
-    borderColor: '#F87171',
+    borderColor: '#CC2222',
   },
   label: {
-    ...typography.bodyBold,
+    fontFamily: typography.bodyBold.fontFamily,
     fontSize: 16,
+    lineHeight: 22,
+  },
+  labelPrimary: {
     color: colors.text,
+  },
+  labelSecondary: {
+    color: colors.primary,
   },
   subtitle: {
     ...typography.bodySmall,
-    color: 'rgba(255,255,255,0.65)',
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 2,
+    textAlign: 'center',
+  },
+  subtitleSecondary: {
+    color: colors.textMuted,
   },
   ghost: {
     alignItems: 'center',
@@ -110,19 +119,22 @@ const styles = StyleSheet.create({
     minHeight: 44,
     justifyContent: 'center',
   },
+  ghostPressed: {
+    opacity: 0.7,
+  },
   ghostLabel: {
     ...typography.bodyMedium,
-    color: colors.primaryBright,
+    color: colors.primary,
     fontSize: 15,
   },
   pressed: {
-    opacity: 0.85,
+    opacity: 0.82,
     transform: [{ scale: 0.98 }],
   },
-  disabledBg: {
-    opacity: 0.45,
+  disabled: {
+    opacity: 0.4,
   },
   disabledText: {
-    color: colors.textDim,
+    color: colors.textMuted,
   },
 });
