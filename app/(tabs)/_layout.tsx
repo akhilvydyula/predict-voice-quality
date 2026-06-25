@@ -17,17 +17,18 @@ function TabNavigator() {
         headerShown: false,
         tabBarActiveTintColor: colors.primaryBright,
         tabBarInactiveTintColor: colors.textDim,
-        tabBarLabelStyle: typography.tabLabel,
+        tabBarLabelStyle: styles.tabLabel,
         tabBarStyle: styles.tabBar,
         tabBarBackground: () => <View style={[StyleSheet.absoluteFill, styles.tabBarBg]} />,
+        tabBarItemStyle: styles.tabItem,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: 'Home',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'grid' : 'grid-outline'} size={size} color={color} />
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -43,7 +44,7 @@ function TabNavigator() {
       <Tabs.Screen
         name="analytics"
         options={{
-          title: 'Analytics',
+          title: 'Progress',
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? 'bar-chart' : 'bar-chart-outline'}
@@ -58,14 +59,14 @@ function TabNavigator() {
         options={{
           title: 'Coach',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'briefcase' : 'briefcase-outline'} size={size} color={color} />
+            <Ionicons name={focused ? 'school' : 'school-outline'} size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="tools"
         options={{
-          title: 'Toolkit',
+          title: 'Tools',
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? 'construct' : 'construct-outline'}
@@ -78,7 +79,7 @@ function TabNavigator() {
       <Tabs.Screen
         name="architect"
         options={{
-          title: 'Architect',
+          title: 'Dev',
           href: enabled ? '/architect' : null,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
@@ -87,7 +88,7 @@ function TabNavigator() {
               color={enabled ? color : colors.textDim}
             />
           ),
-          tabBarItemStyle: enabled ? undefined : { display: 'none', width: 0, height: 0 },
+          tabBarItemStyle: enabled ? styles.tabItem : { display: 'none', width: 0, height: 0 },
         }}
       />
     </Tabs>
@@ -109,12 +110,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    backgroundColor: colors.tabBar,
+    backgroundColor: 'transparent',
     height: spacing.tabBar,
     paddingTop: spacing.sm,
-    paddingBottom: Platform.OS === 'ios' ? spacing.lg : spacing.md,
+    paddingBottom: Platform.OS === 'ios' ? spacing.lg : spacing.sm,
   },
   tabBarBg: {
     backgroundColor: colors.tabBar,
+    backdropFilter: 'blur(16px)',
+  },
+  tabItem: {
+    paddingTop: 2,
+  },
+  tabLabel: {
+    ...typography.tabLabel,
+    fontSize: 10,
+    letterSpacing: 0.2,
   },
 });

@@ -18,14 +18,13 @@ import { GlassCard } from '../../src/components/ui/GlassCard';
 import { PageHeader } from '../../src/components/ui/PageHeader';
 import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
 import { Screen } from '../../src/components/ui/Screen';
-import { SectionHeader } from '../../src/components/ui/SectionHeader';
 import { SegmentedTabs } from '../../src/components/ui/SegmentedTabs';
 import { StatusBadge } from '../../src/components/ui/StatusBadge';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
 import { colors } from '../../src/theme/colors';
 import { layout } from '../../src/theme/layout';
-import { spacing } from '../../src/theme/spacing';
+import { radius, spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 
 type SessionTab = 'live' | 'stats' | 'coach';
@@ -65,159 +64,205 @@ export default function SessionScreen() {
 
   return (
     <Screen>
-        <PageHeader
-          eyebrow="Live assessment"
-          title={isActive ? 'Session in progress' : 'Vocal assessment studio'}
-          subtitle={
-            isActive
-              ? 'Real-time inference across pitch, dynamics, and coach guidance.'
-              : 'Initialize microphone capture to begin enterprise vocal analysis.'
-          }
-          actions={
-            profile && profile.practiceStreak > 0 ? (
-              <StatusBadge label={`${profile.practiceStreak}d streak`} tone="info" />
-            ) : undefined
-          }
+      <PageHeader
+        eyebrow="Practice"
+        title={isActive ? 'Listening…' : 'Vocal studio'}
+        subtitle={
+          isActive
+            ? 'Sing freely — your pitch, tone, and score are updating live.'
+            : 'Tap the button below to start real-time vocal analysis.'
+        }
+        actions={
+          profile && profile.practiceStreak > 0 ? (
+            <StatusBadge label={`${profile.practiceStreak}d streak`} tone="info" />
+          ) : isActive ? (
+            <StatusBadge label="Recording" tone="success" />
+          ) : undefined
+        }
+      />
+
+      {error ? (
+        <View style={styles.alertBanner}>
+          <Text style={styles.alertText}>{error}</Text>
+        </View>
+      ) : null}
+
+      {!isSupported && !error ? (
+        <View style={styles.alertBanner}>
+          <Text style={styles.alertText}>
+            Microphone not available. Open this in a browser with mic permissions, or use Expo Go on your phone.
+          </Text>
+        </View>
+      ) : null}
+
+      <LiveAgentBanner guidance={liveGuidance} />
+
+      {/* Stage card */}
+      <GlassCard glow padding={spacing.xl} style={styles.stage}>
+        {devMode && flags.showLiveOverlay && isActive ? (
+          <DevDebugOverlay telemetry={telemetry} pitch={pitch} />
+        ) : null}
+
+        <PitchMeter
+          noteName={pitch.noteName}
+          octave={pitch.octave}
+          cents={pitch.cents}
+          frequency={pitch.frequency}
+          volume={volume}
+          isActive={isActive}
         />
 
-        {error ? (
-          <GlassCard style={styles.alert} padding={spacing.lg}>
-            <Text style={styles.errorText}>{error}</Text>
-          </GlassCard>
-        ) : null}
+        <ScoreRing score={metrics.overall} />
 
-        {!isSupported && !error ? (
-          <GlassCard padding={spacing.lg}>
-            <Text style={styles.errorText}>
-              Use Expo Go on your phone or a browser with microphone support.
-            </Text>
-          </GlassCard>
-        ) : null}
-
-        <LiveAgentBanner guidance={liveGuidance} />
-
-        <GlassCard glow padding={spacing.xl} style={styles.stage}>
-          {devMode && flags.showLiveOverlay && isActive ? (
-            <DevDebugOverlay telemetry={telemetry} pitch={pitch} />
-          ) : null}
-          <PitchMeter
-            noteName={pitch.noteName}
-            octave={pitch.octave}
-            cents={pitch.cents}
-            frequency={pitch.frequency}
-            volume={volume}
-            isActive={isActive}
-          />
-          <View style={styles.scoreWrap}>
-            <ScoreRing score={metrics.overall} />
-          </View>
+        {/* Status hint */}
+        <View style={styles.hintRow}>
+          {isActive ? <View style={styles.liveDot} /> : null}
           <Text style={styles.stageHint}>
             {isActive
-              ? 'Maintain steady phrasing — coach intelligence updates continuously.'
-              : 'Start recording to begin the live vocal assessment pipeline.'}
+              ? 'Score updates as you sing'
+              : 'Ready to start'}
           </Text>
-          <PrimaryButton
-            label={isActive ? 'Stop session' : 'Start recording'}
-            variant={isActive ? 'danger' : 'primary'}
-            onPress={() => (isActive ? void stop() : void start())}
-            style={styles.recordButton}
-          />
-        </GlassCard>
+        </View>
 
-        <SegmentedTabs
-          tabs={[
-            { key: 'live', label: 'Signal' },
-            { key: 'stats', label: 'Metrics' },
-            { key: 'coach', label: 'Coach' },
-          ]}
-          active={tab}
-          onChange={setTab}
+        <PrimaryButton
+          label={isActive ? 'Stop session' : 'Start recording'}
+          variant={isActive ? 'danger' : 'primary'}
+          onPress={() => (isActive ? void stop() : void start())}
+          style={styles.recordButton}
         />
+      </GlassCard>
 
-        {tab === 'live' ? (
-          <View style={styles.panel}>
-            <SectionHeader title="Pitch trail" subtitle="Last few moments of intonation" />
-            <PitchHistoryChart history={pitchHistory} />
-            <CoachingPanel coaching={coaching} />
+      {/* Tab switcher */}
+      <SegmentedTabs
+        tabs={[
+          { key: 'live', label: 'Signal' },
+          { key: 'stats', label: 'Metrics' },
+          { key: 'coach', label: 'Coach' },
+        ]}
+        active={tab}
+        onChange={setTab}
+      />
+
+      {/* Tab content */}
+      {tab === 'live' ? (
+        <View style={styles.panel}>
+          <Text style={styles.panelTitle}>Pitch trail</Text>
+          <Text style={styles.panelSubtitle}>Last few moments of intonation</Text>
+          <PitchHistoryChart history={pitchHistory} />
+          <CoachingPanel coaching={coaching} />
+        </View>
+      ) : null}
+
+      {tab === 'stats' ? (
+        <View style={styles.panel}>
+          <View style={styles.metricsGrid}>
+            <MetricCard label="Pitch" value={metrics.pitchAccuracy} />
+            <MetricCard label="Stability" value={metrics.stability} />
+            <MetricCard label="Breath" value={metrics.breathControl} />
+            <MetricCard label="Tone" value={metrics.toneClarity} />
+            <MetricCard label="Vibrato" value={metrics.vibrato} />
+            <MetricCard label="Dynamics" value={metrics.dynamics} />
           </View>
-        ) : null}
+          <SingerInsightsPanel insights={insights} />
+          <AdvancedAnalyticsPanel advanced={advanced} />
+        </View>
+      ) : null}
 
-        {tab === 'stats' ? (
-          <View style={styles.panel}>
-            <View style={styles.metricsGrid}>
-              <MetricCard label="Pitch" value={metrics.pitchAccuracy} />
-              <MetricCard label="Stability" value={metrics.stability} />
-              <MetricCard label="Breath" value={metrics.breathControl} />
-              <MetricCard label="Tone" value={metrics.toneClarity} />
-              <MetricCard label="Vibrato" value={metrics.vibrato} />
-              <MetricCard label="Dynamics" value={metrics.dynamics} />
+      {tab === 'coach' ? (
+        <View style={styles.panel}>
+          {sessionSummary && !isActive ? <SessionSummaryCard summary={sessionSummary} /> : null}
+          {agentReport ? (
+            <>
+              <AgentCoachPanel report={agentReport} />
+              <PracticePlanPanel
+                steps={agentReport.practicePlan}
+                focus={agentReport.nextSessionFocus}
+              />
+              <LearningPathPanel milestones={agentReport.milestones} />
+            </>
+          ) : (
+            <View style={styles.emptyCoachWrap}>
+              <Text style={styles.emptyCoachTitle}>No coach report yet</Text>
+              <Text style={styles.emptyCoach}>
+                Complete a session to unlock your personalised practice plan and milestones.
+              </Text>
             </View>
-            <SingerInsightsPanel insights={insights} />
-            <AdvancedAnalyticsPanel advanced={advanced} />
-          </View>
-        ) : null}
-
-        {tab === 'coach' ? (
-          <View style={styles.panel}>
-            {sessionSummary && !isActive ? <SessionSummaryCard summary={sessionSummary} /> : null}
-            {agentReport ? (
-              <>
-                <AgentCoachPanel report={agentReport} />
-                <PracticePlanPanel
-                  steps={agentReport.practicePlan}
-                  focus={agentReport.nextSessionFocus}
-                />
-                <LearningPathPanel milestones={agentReport.milestones} />
-              </>
-            ) : (
-              <GlassCard padding={spacing.lg}>
-                <Text style={styles.emptyCoach}>
-                  Complete a session to unlock your agent-built practice plan and milestones.
-                </Text>
-              </GlassCard>
-            )}
-          </View>
-        ) : null}
+          )}
+        </View>
+      ) : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  alert: {
-    borderColor: colors.danger,
+  alertBanner: {
+    backgroundColor: colors.dangerSoft,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: 'rgba(239,68,68,0.3)',
+    padding: spacing.md,
   },
-  errorText: {
-    ...typography.body,
-    color: colors.textSecondary,
+  alertText: {
+    ...typography.bodySmall,
+    color: colors.danger,
   },
   stage: {
     alignItems: 'center',
     gap: spacing.lg,
-    position: 'relative',
     width: '100%',
     maxWidth: layout.maxContentWidth,
     alignSelf: 'center',
+    paddingVertical: spacing.xxl,
   },
-  scoreWrap: {
-    marginTop: spacing.sm,
+  hintRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  liveDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: colors.success,
   },
   stageHint: {
     ...typography.bodySmall,
     textAlign: 'center',
+    color: colors.textMuted,
   },
   recordButton: {
     alignSelf: 'center',
     width: '100%',
     maxWidth: layout.maxActionWidth,
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   panel: {
     gap: spacing.lg,
+  },
+  panelTitle: {
+    ...typography.h3,
+  },
+  panelSubtitle: {
+    ...typography.bodySmall,
+    marginTop: -spacing.sm,
   },
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
+  },
+  emptyCoachWrap: {
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.xl,
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  emptyCoachTitle: {
+    ...typography.h3,
+    textAlign: 'center',
   },
   emptyCoach: {
     ...typography.body,

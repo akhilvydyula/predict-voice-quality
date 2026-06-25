@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
 
 import { colors } from '../../theme/colors';
 import { radius, spacing } from '../../theme/spacing';
@@ -37,7 +37,7 @@ export function PrimaryButton({
         disabled={disabled}
         style={({ pressed }) => [styles.ghost, pressed && styles.pressed, style]}
       >
-        <Text style={styles.ghostLabel}>{label}</Text>
+        <Text style={[styles.ghostLabel, disabled && styles.disabledText]}>{label}</Text>
       </Pressable>
     );
   }
@@ -49,13 +49,24 @@ export function PrimaryButton({
         ? styles.secondary
         : styles.primary;
 
+  const labelColor =
+    variant === 'secondary' ? colors.textSecondary : colors.text;
+
   return (
     <Pressable
       onPress={handlePress}
       disabled={disabled}
-      style={({ pressed }) => [styles.wrap, variantStyle, pressed && styles.pressed, style]}
+      style={({ pressed }) => [
+        styles.wrap,
+        variantStyle,
+        pressed && styles.pressed,
+        disabled && styles.disabledBg,
+        style,
+      ]}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, { color: labelColor }, disabled && styles.disabledText]}>
+        {label}
+      </Text>
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </Pressable>
   );
@@ -63,10 +74,10 @@ export function PrimaryButton({
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: radius.md,
-    minHeight: 48,
+    borderRadius: radius.lg,
+    minHeight: 52,
     paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -85,12 +96,12 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.bodyBold,
+    fontSize: 16,
     color: colors.text,
-    fontSize: 15,
   },
   subtitle: {
     ...typography.bodySmall,
-    color: colors.textSecondary,
+    color: 'rgba(255,255,255,0.65)',
     marginTop: 2,
   },
   ghost: {
@@ -105,6 +116,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   pressed: {
-    opacity: 0.9,
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
+  },
+  disabledBg: {
+    opacity: 0.45,
+  },
+  disabledText: {
+    color: colors.textDim,
   },
 });

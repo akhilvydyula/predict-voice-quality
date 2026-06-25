@@ -10,7 +10,6 @@ import { EmptyState } from '../../src/components/ui/EmptyState';
 import { KpiCard } from '../../src/components/ui/KpiCard';
 import { PageHeader } from '../../src/components/ui/PageHeader';
 import { Panel } from '../../src/components/ui/Panel';
-import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
 import { Screen } from '../../src/components/ui/Screen';
 import { StatusBadge } from '../../src/components/ui/StatusBadge';
 import { useDevMode } from '../../src/context/DevModeContext';
@@ -19,11 +18,48 @@ import { colors } from '../../src/theme/colors';
 import { radius, spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 
-const QUICK_ACTIONS = [
-  { key: 'practice', label: 'Live session', icon: 'mic-outline' as const, route: '/session' },
-  { key: 'analytics', label: 'Analytics', icon: 'bar-chart-outline' as const, route: '/analytics' },
-  { key: 'tools', label: 'Toolkit', icon: 'construct-outline' as const, route: '/tools' },
-  { key: 'coach', label: 'Coach plan', icon: 'school-outline' as const, route: '/coach' },
+type QuickAction = {
+  key: string;
+  label: string;
+  subtitle: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  route: string;
+  accent: string;
+};
+
+const QUICK_ACTIONS: QuickAction[] = [
+  {
+    key: 'practice',
+    label: 'Start Practice',
+    subtitle: 'Live pitch & coaching',
+    icon: 'mic',
+    route: '/session',
+    accent: colors.primaryBright,
+  },
+  {
+    key: 'analytics',
+    label: 'My Progress',
+    subtitle: 'Charts & history',
+    icon: 'bar-chart',
+    route: '/analytics',
+    accent: colors.accent,
+  },
+  {
+    key: 'tools',
+    label: 'Toolkit',
+    subtitle: 'Tuner, metronome…',
+    icon: 'musical-notes',
+    route: '/tools',
+    accent: colors.success,
+  },
+  {
+    key: 'coach',
+    label: 'Coach',
+    subtitle: 'Plans & milestones',
+    icon: 'school',
+    route: '/coach',
+    accent: colors.warning,
+  },
 ];
 
 export default function DashboardScreen() {
@@ -37,96 +73,127 @@ export default function DashboardScreen() {
       ? 'No prior session'
       : `${metrics.overallDelta >= 0 ? '+' : ''}${metrics.overallDelta} vs last`;
 
+  const greeting =
+    metrics.totalSessions === 0
+      ? 'Welcome to VocalIQ'
+      : metrics.totalSessions === 1
+        ? 'Welcome back'
+        : `${metrics.totalSessions} sessions logged`;
+
   return (
     <Screen>
       <PageHeader
-        eyebrow={`VocalIQ Platform${devMode ? ' · Dev' : ''}`}
-        title="Performance command center"
-        subtitle="Enterprise-grade vocal analytics, session intelligence, and adaptive coaching — processed on-device for privacy and scale."
-        meta="On-device inference · HIPAA-ready architecture · Real-time pipeline"
+        eyebrow={devMode ? 'VocalIQ · Dev mode' : 'VocalIQ'}
+        title={greeting}
+        subtitle={
+          metrics.totalSessions === 0
+            ? 'Analyze your singing with real-time pitch, tone, and coaching feedback.'
+            : 'Keep up the momentum — your voice data is ready.'
+        }
         actions={
-          <StatusBadge
-            label={isActive ? 'Live session' : 'Idle'}
-            tone={isActive ? 'success' : 'default'}
-          />
+          isActive ? (
+            <StatusBadge label="Live" tone="success" />
+          ) : undefined
         }
       />
 
-      <Pressable onPress={registerUnlockTap}>
-        <View style={styles.kpiGrid}>
-          <KpiCard
-            label="Sessions"
-            value={metrics.totalSessions || '—'}
-            hint={`${metrics.weekSessions} this week`}
-          />
-          <KpiCard
-            label="Avg score"
-            value={metrics.averageOverall || '—'}
-            delta={overallDeltaLabel}
-            deltaTone={
-              metrics.overallDelta === null
-                ? 'neutral'
-                : metrics.overallDelta >= 0
-                  ? 'up'
-                  : 'down'
-            }
-          />
-          <KpiCard
-            label="Practice time"
-            value={metrics.totalMinutes ? `${metrics.totalMinutes}m` : '—'}
-            hint="Lifetime minutes"
-          />
-          <KpiCard
-            label="Streak"
-            value={metrics.practiceStreak ? `${metrics.practiceStreak}d` : '—'}
-            hint="Consecutive days"
-          />
-        </View>
-      </Pressable>
+      {/* Big start button when no session yet */}
+      {metrics.totalSessions === 0 ? (
+        <Pressable
+          onPress={() => router.push('/session')}
+          style={({ pressed }) => [styles.heroCta, pressed && styles.heroCtaPressed]}
+        >
+          <View style={styles.heroCtaIcon}>
+            <Ionicons name="mic" size={28} color={colors.text} />
+          </View>
+          <View style={styles.heroCtaCopy}>
+            <Text style={styles.heroCtaTitle}>Start your first session</Text>
+            <Text style={styles.heroCtaSubtitle}>Tap to sing and get instant feedback</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+        </Pressable>
+      ) : null}
 
-      <Panel title="Operational actions" subtitle="Launch high-value workflows">
+      {/* KPI row — only show when data exists */}
+      {metrics.totalSessions > 0 ? (
+        <Pressable onPress={registerUnlockTap}>
+          <View style={styles.kpiGrid}>
+            <KpiCard
+              label="Sessions"
+              value={metrics.totalSessions}
+              hint={`${metrics.weekSessions} this week`}
+              accent={colors.primaryBright}
+            />
+            <KpiCard
+              label="Avg score"
+              value={metrics.averageOverall || '—'}
+              delta={overallDeltaLabel}
+              deltaTone={
+                metrics.overallDelta === null
+                  ? 'neutral'
+                  : metrics.overallDelta >= 0
+                    ? 'up'
+                    : 'down'
+              }
+              accent={colors.success}
+            />
+            <KpiCard
+              label="Practice time"
+              value={metrics.totalMinutes ? `${metrics.totalMinutes}m` : '—'}
+              hint="Total lifetime"
+              accent={colors.accent}
+            />
+            <KpiCard
+              label="Streak"
+              value={metrics.practiceStreak ? `${metrics.practiceStreak}d` : '—'}
+              hint="Consecutive days"
+              accent={colors.warning}
+            />
+          </View>
+        </Pressable>
+      ) : null}
+
+      {/* Quick actions grid */}
+      <View style={styles.actionsWrap}>
+        <Text style={styles.sectionLabel}>Quick actions</Text>
         <View style={styles.actionGrid}>
           {QUICK_ACTIONS.map((action) => (
             <Pressable
               key={action.key}
-              style={styles.actionCard}
+              style={({ pressed }) => [styles.actionCard, pressed && styles.actionCardPressed]}
               onPress={() => router.push(action.route as Href)}
             >
-              <View style={styles.actionIcon}>
-                <Ionicons name={action.icon} size={20} color={colors.primaryBright} />
+              <View style={[styles.actionIcon, { backgroundColor: `${action.accent}1A`, borderColor: `${action.accent}33` }]}>
+                <Ionicons name={action.icon} size={22} color={action.accent} />
               </View>
               <Text style={styles.actionLabel}>{action.label}</Text>
+              <Text style={styles.actionSub}>{action.subtitle}</Text>
             </Pressable>
           ))}
         </View>
-        <PrimaryButton
-          label="Start live vocal assessment"
-          subtitle="Real-time pitch, dynamics, and coach feedback"
-          onPress={() => router.push('/session')}
-          style={styles.primaryCta}
-        />
-      </Panel>
+      </View>
 
+      {/* Charts / history when data exists */}
       {metrics.totalSessions > 0 ? (
         <>
           <Panel
-            title="Performance trend"
-            subtitle="Rolling overall score across recent sessions"
+            title="Score over time"
+            subtitle="How your overall has changed"
             variant="elevated"
           >
             <PerformanceTrendChart points={metrics.trendPoints} />
           </Panel>
 
-          <Panel title="Skill distribution" subtitle="Population averages across logged sessions">
+          <Panel title="Skill breakdown" subtitle="Where you're strong and where to improve">
             <SkillBreakdownChart items={metrics.skillBreakdown} />
           </Panel>
 
           <Panel
             title="Recent sessions"
-            subtitle="Audit trail for coaching and progress reviews"
+            subtitle="Tap a session for details"
             headerRight={
               <Pressable onPress={() => router.push('/analytics')}>
-                <Text style={styles.link}>View all</Text>
+                <Text style={styles.link}>See all</Text>
               </Pressable>
             }
           >
@@ -136,10 +203,10 @@ export default function DashboardScreen() {
       ) : (
         <Panel variant="elevated">
           <EmptyState
-            icon="pulse-outline"
-            title="No session data yet"
-            description="Run your first live assessment to populate executive dashboards, trend analysis, and coach recommendations."
-            actionLabel="Begin assessment"
+            icon="mic-circle-outline"
+            title="No sessions yet"
+            description="Start a live practice to see your scores, trends, and personalised coaching."
+            actionLabel="Start practicing"
             onAction={() => router.push('/session')}
           />
         </Panel>
@@ -149,41 +216,88 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
+  heroCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    gap: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.primaryBright,
+  },
+  heroCtaPressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.98 }],
+  },
+  heroCtaIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroCtaCopy: {
+    flex: 1,
+    gap: 3,
+  },
+  heroCtaTitle: {
+    ...typography.bodyBold,
+    fontSize: 16,
+    color: colors.text,
+  },
+  heroCtaSubtitle: {
+    ...typography.bodySmall,
+    color: 'rgba(255,255,255,0.7)',
+  },
   kpiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
   },
+  actionsWrap: {
+    gap: spacing.sm,
+  },
+  sectionLabel: {
+    ...typography.overline,
+    color: colors.textDim,
+    marginBottom: 2,
+  },
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
-    marginBottom: spacing.lg,
   },
   actionCard: {
     width: '47%',
-    minHeight: 88,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surfaceElevated,
     padding: spacing.lg,
-    gap: spacing.md,
+    gap: spacing.sm,
+  },
+  actionCardPressed: {
+    backgroundColor: colors.surfaceHover,
+    transform: [{ scale: 0.97 }],
   },
   actionIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primarySoft,
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 2,
   },
   actionLabel: {
     ...typography.bodyBold,
-    fontSize: 14,
+    fontSize: 15,
   },
-  primaryCta: {
-    marginTop: spacing.xs,
+  actionSub: {
+    ...typography.bodySmall,
+    color: colors.textDim,
   },
   link: {
     ...typography.bodySmall,

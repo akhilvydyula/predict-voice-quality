@@ -42,13 +42,16 @@ const styles = StyleSheet.create({
   eyebrow: {
     ...typography.overline,
     color: colors.accent,
+    fontSize: 10,
   },
   title: {
     ...typography.h1,
+    fontSize: 26,
   },
   subtitle: {
     ...typography.body,
     maxWidth: 560,
+    lineHeight: 22,
   },
   meta: {
     ...typography.bodySmall,

@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { PrimaryButton } from './PrimaryButton';
 import { colors } from '../../theme/colors';
-import { spacing } from '../../theme/spacing';
+import { radius, spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 
 type EmptyStateProps = {
@@ -24,12 +24,17 @@ export function EmptyState({
   return (
     <View style={styles.wrap}>
       <View style={styles.iconWrap}>
-        <Ionicons name={icon} size={28} color={colors.primaryBright} />
+        <Ionicons name={icon} size={32} color={colors.primaryBright} />
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
       {actionLabel && onAction ? (
-        <PrimaryButton label={actionLabel} variant="secondary" onPress={onAction} style={styles.cta} />
+        <PrimaryButton
+          label={actionLabel}
+          variant="primary"
+          onPress={onAction}
+          style={styles.cta}
+        />
       ) : null}
     </View>
   );
@@ -40,18 +45,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.xxxl,
     paddingHorizontal: spacing.xl,
-    gap: spacing.sm,
+    gap: spacing.md,
   },
   iconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 72,
+    height: 72,
+    borderRadius: radius.xl,
     backgroundColor: colors.primarySoft,
     borderWidth: 1,
-    borderColor: colors.borderStrong,
+    borderColor: `${colors.primaryBright}33`,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
   title: {
     ...typography.h2,
@@ -60,10 +65,11 @@ const styles = StyleSheet.create({
   description: {
     ...typography.body,
     textAlign: 'center',
-    maxWidth: 360,
+    maxWidth: 340,
+    lineHeight: 22,
   },
   cta: {
-    marginTop: spacing.md,
-    alignSelf: 'stretch',
+    marginTop: spacing.sm,
+    minWidth: 200,
   },
 });
