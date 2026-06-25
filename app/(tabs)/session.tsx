@@ -17,9 +17,11 @@ import { SessionSummaryCard } from '../../src/components/SessionSummaryCard';
 import { SingerInsightsPanel } from '../../src/components/SingerInsightsPanel';
 import { GlassCard } from '../../src/components/ui/GlassCard';
 import { MicFAB } from '../../src/components/ui/MicFAB';
+import { PageHeader } from '../../src/components/ui/PageHeader';
 import { Screen } from '../../src/components/ui/Screen';
 import { SectionHeader } from '../../src/components/ui/SectionHeader';
 import { SegmentedTabs } from '../../src/components/ui/SegmentedTabs';
+import { StatusBadge } from '../../src/components/ui/StatusBadge';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
 import { colors } from '../../src/theme/colors';
@@ -65,17 +67,20 @@ export default function SessionScreen() {
   return (
     <View style={styles.root}>
       <Screen contentContainerStyle={styles.scrollExtra}>
-        <View style={styles.topBar}>
-          <View>
-            <Text style={styles.eyebrow}>PRACTICE STUDIO</Text>
-            <Text style={styles.title}>{isActive ? 'Live now' : 'Ready to sing'}</Text>
-          </View>
-          {profile && profile.practiceStreak > 0 ? (
-            <View style={styles.streakPill}>
-              <Text style={styles.streakText}>🔥 {profile.practiceStreak}d</Text>
-            </View>
-          ) : null}
-        </View>
+        <PageHeader
+          eyebrow="Live assessment"
+          title={isActive ? 'Session in progress' : 'Vocal assessment studio'}
+          subtitle={
+            isActive
+              ? 'Real-time inference across pitch, dynamics, and coach guidance.'
+              : 'Initialize microphone capture to begin enterprise vocal analysis.'
+          }
+          actions={
+            profile && profile.practiceStreak > 0 ? (
+              <StatusBadge label={`${profile.practiceStreak}d streak`} tone="info" />
+            ) : undefined
+          }
+        />
 
         {error ? (
           <GlassCard style={styles.alert} padding={spacing.lg}>
@@ -110,15 +115,15 @@ export default function SessionScreen() {
           </View>
           <Text style={styles.stageHint}>
             {isActive
-              ? 'Sing naturally — the coach responds in real time'
-              : 'Tap Sing below to begin your session'}
+              ? 'Maintain steady phrasing — coach intelligence updates continuously.'
+              : 'Press record to begin the live vocal assessment pipeline.'}
           </Text>
         </GlassCard>
 
         <SegmentedTabs
           tabs={[
-            { key: 'live', label: 'Live' },
-            { key: 'stats', label: 'Analytics' },
+            { key: 'live', label: 'Signal' },
+            { key: 'stats', label: 'Metrics' },
             { key: 'coach', label: 'Coach' },
           ]}
           active={tab}
@@ -136,12 +141,12 @@ export default function SessionScreen() {
         {tab === 'stats' ? (
           <View style={styles.panel}>
             <View style={styles.metricsGrid}>
-              <MetricCard label="Pitch" value={metrics.pitchAccuracy} icon="🎵" />
-              <MetricCard label="Stability" value={metrics.stability} icon="🎯" />
-              <MetricCard label="Breath" value={metrics.breathControl} icon="💨" />
-              <MetricCard label="Tone" value={metrics.toneClarity} icon="✨" />
-              <MetricCard label="Vibrato" value={metrics.vibrato} icon="〰️" />
-              <MetricCard label="Dynamics" value={metrics.dynamics} icon="📈" />
+              <MetricCard label="Pitch" value={metrics.pitchAccuracy} />
+              <MetricCard label="Stability" value={metrics.stability} />
+              <MetricCard label="Breath" value={metrics.breathControl} />
+              <MetricCard label="Tone" value={metrics.toneClarity} />
+              <MetricCard label="Vibrato" value={metrics.vibrato} />
+              <MetricCard label="Dynamics" value={metrics.dynamics} />
             </View>
             <SingerInsightsPanel insights={insights} />
             <AdvancedAnalyticsPanel advanced={advanced} />

@@ -6,7 +6,8 @@ import { MetronomePanel } from '../../src/components/tools/MetronomePanel';
 import { RangeMapPanel } from '../../src/components/tools/RangeMapPanel';
 import { ScaleGuidePanel } from '../../src/components/tools/ScaleGuidePanel';
 import { TunerPanel } from '../../src/components/tools/TunerPanel';
-import { GlassCard } from '../../src/components/ui/GlassCard';
+import { PageHeader } from '../../src/components/ui/PageHeader';
+import { Panel } from '../../src/components/ui/Panel';
 import { Screen } from '../../src/components/ui/Screen';
 import { SectionHeader } from '../../src/components/ui/SectionHeader';
 import { SegmentedTabs } from '../../src/components/ui/SegmentedTabs';
@@ -50,13 +51,11 @@ export default function ToolsScreen() {
 
   return (
     <Screen contentContainerStyle={styles.scroll}>
-      <View style={styles.hero}>
-        <Text style={styles.eyebrow}>SINGER TOOLKIT</Text>
-        <Text style={styles.title}>Practice tools</Text>
-        <Text style={styles.subtitle}>
-          Tuner, metronome, scales, breath work, and your vocal range — everything in one studio.
-        </Text>
-      </View>
+      <PageHeader
+        eyebrow="Professional toolkit"
+        title="Vocal operations suite"
+        subtitle="Tuner, tempo engine, scale reference, breath protocols, and range intelligence for daily training workflows."
+      />
 
       <SegmentedTabs
         tabs={[
@@ -71,7 +70,7 @@ export default function ToolsScreen() {
         scrollable
       />
 
-      <GlassCard glow padding={spacing.xl}>
+      <Panel variant="elevated" padding={spacing.xl}>
         {tab === 'tuner' ? (
           <TunerPanel
             isActive={isActive}
@@ -92,7 +91,7 @@ export default function ToolsScreen() {
         {tab === 'breath' ? <BreathCoachPanel /> : null}
 
         {tab === 'range' ? <RangeMapPanel insights={insights} profile={profile} /> : null}
-      </GlassCard>
+      </Panel>
 
       {tab !== 'range' ? (
         <SectionHeader

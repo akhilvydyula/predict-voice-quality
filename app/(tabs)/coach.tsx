@@ -8,10 +8,11 @@ import { VoiceRegister } from '../../src/audio/advancedAnalytics';
 import { AgentCoachPanel } from '../../src/components/AgentCoachPanel';
 import { LearningPathPanel } from '../../src/components/LearningPathPanel';
 import { PracticePlanPanel } from '../../src/components/PracticePlanPanel';
-import { GlassCard } from '../../src/components/ui/GlassCard';
+import { KpiCard } from '../../src/components/ui/KpiCard';
+import { PageHeader } from '../../src/components/ui/PageHeader';
+import { Panel } from '../../src/components/ui/Panel';
 import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
 import { Screen } from '../../src/components/ui/Screen';
-import { SectionHeader } from '../../src/components/ui/SectionHeader';
 import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
@@ -82,32 +83,22 @@ export default function CoachScreen() {
 
   return (
     <Screen>
-      <View style={styles.hero}>
-        <Text style={styles.eyebrow}>AGENTIC COACH</Text>
-        <Text style={styles.title}>Your learning hub</Text>
-        <Text style={styles.subtitle}>
-          Personalized plans, progress memory, and milestones — tuned to how you actually sing.
-        </Text>
-      </View>
+      <PageHeader
+        eyebrow="Adaptive coaching"
+        title="Vocal development program"
+        subtitle="Personalized training plans, milestone tracking, and session memory for structured vocalist development."
+      />
 
       {profile ? (
         <View style={styles.statsRow}>
-          {[
-            { label: 'Sessions', value: profile.sessions.length },
-            { label: 'Minutes', value: profile.totalPracticeMinutes },
-            { label: 'Streak', value: profile.practiceStreak },
-          ].map((stat) => (
-            <GlassCard key={stat.label} padding={spacing.lg} style={styles.statCard}>
-              <Text style={styles.statValue}>{stat.value}</Text>
-              <Text style={styles.statLabel}>{stat.label}</Text>
-            </GlassCard>
-          ))}
+          <KpiCard label="Sessions" value={profile.sessions.length} />
+          <KpiCard label="Minutes" value={profile.totalPracticeMinutes} />
+          <KpiCard label="Streak" value={`${profile.practiceStreak}d`} />
         </View>
       ) : null}
 
       {profile && profile.sessions.length > 0 ? (
-        <GlassCard glow padding={spacing.lg}>
-          <SectionHeader title="Skill profile" subtitle="Rolling averages across sessions" />
+        <Panel title="Competency profile" subtitle="Rolling averages across logged sessions" variant="elevated">
           <View style={styles.skillGrid}>
             {[
               ['Pitch', profile.skillAverages.pitchAccuracy],
@@ -126,15 +117,15 @@ export default function CoachScreen() {
           </Text>
           <Text style={styles.strengthLine}>Strength · {profile.persistentStrength}</Text>
           <Text style={styles.goal}>Goal: {profile.learningGoal}</Text>
-        </GlassCard>
+        </Panel>
       ) : (
-        <GlassCard padding={spacing.xl}>
+        <Panel variant="elevated">
           <Text style={styles.emptyTitle}>Your coach is waiting</Text>
           <Text style={styles.emptyBody}>
             Complete one live session and your agent will build a practice plan, track milestones,
             and remember what to work on next.
           </Text>
-        </GlassCard>
+        </Panel>
       )}
 
       <AgentCoachPanel report={report} />
@@ -142,8 +133,8 @@ export default function CoachScreen() {
       <LearningPathPanel milestones={report.milestones} />
 
       <PrimaryButton
-        label="Start practice session"
-        subtitle="Open the live studio"
+        label="Launch live assessment"
+        subtitle="Open vocal assessment studio"
         onPress={() => router.push('/session')}
       />
     </Screen>

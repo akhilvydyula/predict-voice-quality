@@ -1,16 +1,27 @@
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../theme/colors';
 import { radius, spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 
+const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
+  pitch: 'musical-notes-outline',
+  stability: 'locate-outline',
+  breath: 'water-outline',
+  tone: 'sparkles-outline',
+  vibrato: 'pulse-outline',
+  dynamics: 'trending-up-outline',
+};
+
 type MetricCardProps = {
   label: string;
   value: number;
-  icon: string;
+  icon?: string;
 };
 
 export function MetricCard({ label, value, icon }: MetricCardProps) {
+  const iconName = ICONS[label.toLowerCase()] ?? 'analytics-outline';
   const barColor =
     value >= 75 ? colors.success : value >= 50 ? colors.warning : colors.danger;
   const hasValue = value > 0;
@@ -19,7 +30,7 @@ export function MetricCard({ label, value, icon }: MetricCardProps) {
     <View style={styles.card}>
       <View style={styles.topRow}>
         <View style={styles.iconWrap}>
-          <Text style={styles.icon}>{icon}</Text>
+          <Ionicons name={icon ? (icon as keyof typeof Ionicons.glyphMap) : iconName} size={16} color={colors.primaryBright} />
         </View>
         <Text style={styles.value}>{hasValue ? value : '—'}</Text>
       </View>
@@ -42,7 +53,7 @@ export function MetricCard({ label, value, icon }: MetricCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
     padding: spacing.lg,
     borderWidth: 1,
     borderColor: colors.border,
@@ -58,15 +69,12 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 34,
     height: 34,
-    borderRadius: 17,
-    backgroundColor: colors.surface,
+    borderRadius: radius.sm,
+    backgroundColor: colors.primarySoft,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.border,
-  },
-  icon: {
-    fontSize: 16,
   },
   value: {
     ...typography.h1,
@@ -74,15 +82,16 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.bodySmall,
+    color: colors.textSecondary,
   },
   track: {
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: colors.surface,
+    height: 6,
+    borderRadius: radius.pill,
+    backgroundColor: colors.backgroundElevated,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: radius.pill,
   },
 });

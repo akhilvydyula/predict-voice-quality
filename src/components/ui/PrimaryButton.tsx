@@ -1,8 +1,7 @@
 import * as Haptics from 'expo-haptics';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import { colors, gradients } from '../../theme/colors';
+import { colors } from '../../theme/colors';
 import { radius, spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 
@@ -10,7 +9,7 @@ type PrimaryButtonProps = {
   label: string;
   subtitle?: string;
   onPress: () => void;
-  variant?: 'primary' | 'danger' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   style?: ViewStyle;
   disabled?: boolean;
 };
@@ -26,7 +25,7 @@ export function PrimaryButton({
   const handlePress = () => {
     if (disabled) return;
     void Haptics.impactAsync(
-      variant === 'danger' ? Haptics.ImpactFeedbackStyle.Heavy : Haptics.ImpactFeedbackStyle.Medium
+      variant === 'danger' ? Haptics.ImpactFeedbackStyle.Heavy : Haptics.ImpactFeedbackStyle.Light
     );
     onPress();
   };
@@ -43,49 +42,56 @@ export function PrimaryButton({
     );
   }
 
-  const gradientColors =
-    variant === 'danger' ? (['#ff5c6a', '#e11d48'] as const) : ([...gradients.cta] as const);
+  const variantStyle =
+    variant === 'danger'
+      ? styles.danger
+      : variant === 'secondary'
+        ? styles.secondary
+        : styles.primary;
 
   return (
     <Pressable
       onPress={handlePress}
       disabled={disabled}
-      style={({ pressed }) => [styles.wrap, pressed && styles.pressed, style]}
+      style={({ pressed }) => [styles.wrap, variantStyle, pressed && styles.pressed, style]}
     >
-      <LinearGradient
-        colors={gradientColors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
-      >
-        <Text style={styles.label}>{label}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-      </LinearGradient>
+      <Text style={styles.label}>{label}</Text>
+      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: radius.xl,
-    overflow: 'hidden',
-    minHeight: 56,
-  },
-  gradient: {
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.xl,
+    borderRadius: radius.md,
+    minHeight: 48,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+  },
+  primary: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primaryBright,
+  },
+  secondary: {
+    backgroundColor: colors.surfaceElevated,
+    borderColor: colors.borderStrong,
+  },
+  danger: {
+    backgroundColor: colors.danger,
+    borderColor: '#F87171',
   },
   label: {
-    ...typography.h3,
+    ...typography.bodyBold,
     color: colors.text,
-    fontSize: 17,
+    fontSize: 15,
   },
   subtitle: {
     ...typography.bodySmall,
-    color: 'rgba(255,255,255,0.82)',
-    marginTop: 4,
+    color: colors.textSecondary,
+    marginTop: 2,
   },
   ghost: {
     alignItems: 'center',
@@ -99,7 +105,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   pressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.985 }],
+    opacity: 0.9,
   },
 });

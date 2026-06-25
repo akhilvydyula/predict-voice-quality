@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import { Tabs } from 'expo-router';
 import { Platform, StyleSheet, View } from 'react-native';
 
@@ -20,20 +19,15 @@ function TabNavigator() {
         tabBarInactiveTintColor: colors.textDim,
         tabBarLabelStyle: typography.tabLabel,
         tabBarStyle: styles.tabBar,
-        tabBarBackground: () =>
-          Platform.OS === 'ios' ? (
-            <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, styles.tabBarAndroid]} />
-          ),
+        tabBarBackground: () => <View style={[StyleSheet.absoluteFill, styles.tabBarBg]} />,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Dashboard',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+            <Ionicons name={focused ? 'grid' : 'grid-outline'} size={size} color={color} />
           ),
         }}
       />
@@ -42,17 +36,17 @@ function TabNavigator() {
         options={{
           title: 'Practice',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'mic' : 'mic-outline'} size={size + 2} color={color} />
+            <Ionicons name={focused ? 'mic' : 'mic-outline'} size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="tools"
+        name="analytics"
         options={{
-          title: 'Tools',
+          title: 'Analytics',
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
-              name={focused ? 'options' : 'options-outline'}
+              name={focused ? 'bar-chart' : 'bar-chart-outline'}
               size={size}
               color={color}
             />
@@ -64,8 +58,17 @@ function TabNavigator() {
         options={{
           title: 'Coach',
           tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'briefcase' : 'briefcase-outline'} size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="tools"
+        options={{
+          title: 'Toolkit',
+          tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
-              name={focused ? 'sparkles' : 'sparkles-outline'}
+              name={focused ? 'construct' : 'construct-outline'}
               size={size}
               color={color}
             />
@@ -79,7 +82,7 @@ function TabNavigator() {
           href: enabled ? '/architect' : null,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
-              name={focused ? 'code-slash' : 'code-slash-outline'}
+              name={focused ? 'terminal' : 'terminal-outline'}
               size={size}
               color={enabled ? color : colors.textDim}
             />
@@ -106,12 +109,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    backgroundColor: Platform.OS === 'ios' ? 'transparent' : colors.tabBar,
+    backgroundColor: colors.tabBar,
     height: spacing.tabBar,
     paddingTop: spacing.sm,
     paddingBottom: Platform.OS === 'ios' ? spacing.lg : spacing.md,
   },
-  tabBarAndroid: {
+  tabBarBg: {
     backgroundColor: colors.tabBar,
   },
 });

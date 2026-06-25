@@ -70,6 +70,14 @@ export const typography = {
     textTransform: 'uppercase',
     color: colors.textMuted,
   } satisfies TextStyle,
+  overline: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: colors.textMuted,
+  } satisfies TextStyle,
   metric: {
     fontFamily: fonts.display,
     fontSize: 52,
