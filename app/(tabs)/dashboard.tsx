@@ -1,308 +1,278 @@
-import { useRouter, type Href } from 'expo-router';
-import { Pressable, Platform, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import {
+  buildWeekComparisons,
+  formatPracticeDuration,
+} from '../../src/analytics/dashboardHelpers';
 import { buildDashboardMetrics } from '../../src/analytics/sessionAnalytics';
 import { PerformanceTrendChart } from '../../src/components/analytics/PerformanceTrendChart';
 import { SessionHistoryList } from '../../src/components/analytics/SessionHistoryList';
 import { SkillBreakdownChart } from '../../src/components/analytics/SkillBreakdownChart';
+import { DashboardKpiCard } from '../../src/components/dashboard/DashboardKpiCard';
+import { QuickActionRow } from '../../src/components/dashboard/QuickActionRow';
+import { AppTopBar } from '../../src/components/layout/AppTopBar';
+import { useAppShellLayout } from '../../src/components/layout/AppShell';
 import { EmptyState } from '../../src/components/ui/EmptyState';
-import { KpiCard } from '../../src/components/ui/KpiCard';
-import { PageHeader } from '../../src/components/ui/PageHeader';
 import { Panel } from '../../src/components/ui/Panel';
-import { Screen } from '../../src/components/ui/Screen';
 import { StatusBadge } from '../../src/components/ui/StatusBadge';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
 import { colors } from '../../src/theme/colors';
-import { radius, spacing } from '../../src/theme/spacing';
-import { typography } from '../../src/theme/typography';
+import { layout } from '../../src/theme/layout';
+import { spacing } from '../../src/theme/spacing';
+import { fonts } from '../../src/theme/typography';
 
-type QuickAction = {
-  key: string;
-  label: string;
-  subtitle: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  route: string;
-  accent: string;
-};
-
-const QUICK_ACTIONS: QuickAction[] = [
+const QUICK_ACTIONS = [
   {
     key: 'practice',
-    label: 'Start Practice',
-    subtitle: 'Live pitch & coaching',
-    icon: 'mic',
-    route: '/session',
-    accent: colors.primary,
+    title: 'Start practice',
+    description: 'Record a new session and improve your delivery.',
+    ctaLabel: 'Start now',
+    route: '/session' as const,
+    icon: 'mic' as const,
   },
   {
     key: 'analytics',
-    label: 'My Progress',
-    subtitle: 'Charts & history',
-    icon: 'bar-chart',
-    route: '/analytics',
-    accent: '#06B6D4',
+    title: 'View analytics',
+    description: 'Dive into your performance and track your progress.',
+    ctaLabel: 'Open analytics',
+    route: '/analytics' as const,
+    icon: 'bar-chart' as const,
   },
   {
     key: 'tools',
-    label: 'Toolkit',
-    subtitle: 'Tuner, metronome…',
-    icon: 'musical-notes',
-    route: '/tools',
-    accent: colors.success,
+    title: 'Explore toolkit',
+    description: 'Use tools and exercises to refine your speaking skills.',
+    ctaLabel: 'Open toolkit',
+    route: '/tools' as const,
+    icon: 'construct' as const,
   },
   {
     key: 'coach',
-    label: 'Coach',
-    subtitle: 'Plans & milestones',
-    icon: 'school',
-    route: '/coach',
-    accent: colors.accent,
+    title: 'Connect with coach',
+    description: 'Get AI-powered feedback and coaching tips.',
+    ctaLabel: 'Open coach',
+    route: '/coach' as const,
+    icon: 'school' as const,
   },
 ];
 
 export default function DashboardScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const { showSidebar } = useAppShellLayout();
   const { enabled: devMode, registerUnlockTap } = useDevMode();
   const { profile, isActive } = useVoiceSession();
   const metrics = buildDashboardMetrics(profile);
+  const week = buildWeekComparisons(profile?.sessions ?? []);
 
-  const overallDeltaLabel =
-    metrics.overallDelta === null
-      ? 'No prior session'
-      : `${metrics.overallDelta >= 0 ? '+' : ''}${metrics.overallDelta} vs last`;
+  const isWideKpi = width >= (showSidebar ? layout.sidebarBreakpoint : 720);
+  const streakTrend =
+    metrics.practiceStreak >= 7
+      ? '🔥 Best streak!'
+      : metrics.practiceStreak > 0
+        ? `${metrics.practiceStreak} day streak`
+        : 'Start your streak today';
 
-  const greeting =
-    metrics.totalSessions === 0
-      ? 'Welcome to VocalIQ'
-      : metrics.totalSessions === 1
-        ? 'Welcome back'
-        : `${metrics.totalSessions} sessions logged`;
+  const sessionsTrendTone =
+    week.sessionsThisWeek > week.sessionsLastWeek
+      ? 'up'
+      : week.sessionsThisWeek < week.sessionsLastWeek
+        ? 'down'
+        : 'neutral';
+
+  const scoreTrendTone =
+    week.scoreThisWeek > week.scoreLastWeek
+      ? 'up'
+      : week.scoreThisWeek < week.scoreLastWeek
+        ? 'down'
+        : 'neutral';
+
+  const minutesTrendTone =
+    week.minutesThisWeek > week.minutesLastWeek
+      ? 'up'
+      : week.minutesThisWeek < week.minutesLastWeek
+        ? 'down'
+        : 'neutral';
 
   return (
-    <Screen>
-      <PageHeader
-        eyebrow={devMode ? 'VocalIQ · Dev mode' : 'VocalIQ'}
-        title={greeting}
-        subtitle={
-          metrics.totalSessions === 0
-            ? 'Analyze your singing with real-time pitch, tone, and coaching feedback.'
-            : 'Keep up the momentum — your voice data is ready.'
-        }
-        actions={
-          isActive ? (
-            <StatusBadge label="Live" tone="success" />
-          ) : undefined
-        }
-      />
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={[
+        styles.scrollContent,
+        {
+          paddingTop: (showSidebar ? spacing.xxl : insets.top) + spacing.lg,
+          paddingBottom: showSidebar ? spacing.xxxl : spacing.tabBar + spacing.xxxl,
+        },
+      ]}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.inner}>
+        <AppTopBar
+          title={metrics.totalSessions === 0 ? 'Welcome to VocalIQ 👋' : 'Welcome back 👋'}
+          subtitle="Here's an overview of your speaking practice."
+          actions={isActive ? <StatusBadge label="Live" tone="success" /> : undefined}
+        />
 
-      {/* Big start button when no session yet */}
-      {metrics.totalSessions === 0 ? (
-        <Pressable
-          onPress={() => router.push('/session')}
-          style={({ pressed }) => [styles.heroCta, pressed && styles.heroCtaPressed]}
-        >
-          <View style={styles.heroCtaIcon}>
-            <Ionicons name="mic" size={28} color={colors.textOnPrimary} />
-          </View>
-          <View style={styles.heroCtaCopy}>
-            <Text style={styles.heroCtaTitle}>Start your first session</Text>
-            <Text style={styles.heroCtaSubtitle}>Tap to sing and get instant feedback</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.7)" />
-        </Pressable>
-      ) : null}
+        {devMode ? (
+          <Pressable onPress={registerUnlockTap}>
+            <Text style={styles.devHint}>Dev mode enabled</Text>
+          </Pressable>
+        ) : null}
 
-      {/* KPI row — only show when data exists */}
-      {metrics.totalSessions > 0 ? (
-        <Pressable onPress={registerUnlockTap}>
-          <View style={styles.kpiGrid}>
-            <KpiCard
-              label="Sessions"
-              value={metrics.totalSessions}
-              hint={`${metrics.weekSessions} this week`}
-              accent={colors.primary}
-            />
-            <KpiCard
-              label="Avg score"
-              value={metrics.averageOverall || '—'}
-              delta={overallDeltaLabel}
-              deltaTone={
-                metrics.overallDelta === null
-                  ? 'neutral'
-                  : metrics.overallDelta >= 0
-                    ? 'up'
-                    : 'down'
-              }
-              accent={colors.success}
-            />
-            <KpiCard
-              label="Practice time"
-              value={metrics.totalMinutes ? `${metrics.totalMinutes}m` : '—'}
-              hint="Total lifetime"
-              accent="#06B6D4"
-            />
-            <KpiCard
-              label="Streak"
-              value={metrics.practiceStreak ? `${metrics.practiceStreak}d` : '—'}
-              hint="Consecutive days"
-              accent={colors.accent}
-            />
-          </View>
-        </Pressable>
-      ) : null}
+        <View style={[styles.kpiRow, isWideKpi ? styles.kpiRowWide : styles.kpiRowGrid]}>
+          <DashboardKpiCard
+            label="Sessions"
+            value={String(metrics.totalSessions || 0)}
+            trend={metrics.totalSessions > 0 ? week.sessionsDelta : `${metrics.weekSessions} this week`}
+            trendTone={sessionsTrendTone}
+            icon="mic-outline"
+            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+          />
+          <DashboardKpiCard
+            label="Avg score"
+            value={metrics.averageOverall ? String(metrics.averageOverall) : '—'}
+            suffix={metrics.averageOverall ? '/100' : undefined}
+            trend={
+              metrics.averageOverall
+                ? week.scoreDelta
+                : metrics.totalSessions === 0
+                  ? 'Complete a session'
+                  : 'Building average'
+            }
+            trendTone={scoreTrendTone}
+            icon="pulse-outline"
+            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+          />
+          <DashboardKpiCard
+            label="Practice time"
+            value={formatPracticeDuration(metrics.totalMinutes)}
+            trend={
+              metrics.totalMinutes > 0
+                ? week.minutesDelta
+                : 'Track time as you practice'
+            }
+            trendTone={minutesTrendTone}
+            icon="time-outline"
+            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+          />
+          <DashboardKpiCard
+            label="Streak"
+            value={metrics.practiceStreak ? `${metrics.practiceStreak}` : '0'}
+            suffix={metrics.practiceStreak ? 'days' : undefined}
+            trend={streakTrend}
+            trendTone={metrics.practiceStreak >= 7 ? 'accent' : 'neutral'}
+            icon="flame-outline"
+            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+          />
+        </View>
 
-      {/* Quick actions grid */}
-      <View style={styles.actionsWrap}>
-        <Text style={styles.sectionLabel}>Quick actions</Text>
-        <View style={styles.actionGrid}>
+        <Text style={styles.sectionTitle}>Quick actions</Text>
+        <View style={styles.actionsList}>
           {QUICK_ACTIONS.map((action) => (
-            <Pressable
-              key={action.key}
-              style={({ pressed }) => [styles.actionCard, pressed && styles.actionCardPressed]}
-              onPress={() => router.push(action.route as Href)}
-            >
-              <View style={[styles.actionIcon, { backgroundColor: `${action.accent}1A`, borderColor: `${action.accent}33` }]}>
-                <Ionicons name={action.icon} size={22} color={action.accent} />
-              </View>
-              <Text style={styles.actionLabel}>{action.label}</Text>
-              <Text style={styles.actionSub}>{action.subtitle}</Text>
-            </Pressable>
+            <QuickActionRow key={action.key} {...action} />
           ))}
         </View>
+
+        {metrics.totalSessions > 0 ? (
+          <View style={styles.chartsSection}>
+            <Panel title="Score over time" subtitle="How your overall has changed" variant="elevated">
+              <PerformanceTrendChart points={metrics.trendPoints} />
+            </Panel>
+
+            <Panel title="Skill breakdown" subtitle="Where you're strong and where to improve">
+              <SkillBreakdownChart items={metrics.skillBreakdown} />
+            </Panel>
+
+            <Panel
+              title="Recent sessions"
+              subtitle="Your latest practice history"
+              headerRight={
+                <Pressable onPress={() => router.push('/analytics')}>
+                  <Text style={styles.link}>See all</Text>
+                </Pressable>
+              }
+            >
+              <SessionHistoryList sessions={metrics.recentSessions.slice(0, 4)} />
+            </Panel>
+          </View>
+        ) : (
+          <Panel variant="elevated" style={styles.emptyPanel}>
+            <EmptyState
+              icon="mic-circle-outline"
+              title="No sessions yet"
+              description="Start a live practice to see your scores, trends, and personalised coaching."
+              actionLabel="Start practicing"
+              onAction={() => router.push('/session')}
+            />
+          </Panel>
+        )}
       </View>
-
-      {/* Charts / history when data exists */}
-      {metrics.totalSessions > 0 ? (
-        <>
-          <Panel
-            title="Score over time"
-            subtitle="How your overall has changed"
-            variant="elevated"
-          >
-            <PerformanceTrendChart points={metrics.trendPoints} />
-          </Panel>
-
-          <Panel title="Skill breakdown" subtitle="Where you're strong and where to improve">
-            <SkillBreakdownChart items={metrics.skillBreakdown} />
-          </Panel>
-
-          <Panel
-            title="Recent sessions"
-            subtitle="Tap a session for details"
-            headerRight={
-              <Pressable onPress={() => router.push('/analytics')}>
-                <Text style={styles.link}>See all</Text>
-              </Pressable>
-            }
-          >
-            <SessionHistoryList sessions={metrics.recentSessions.slice(0, 4)} />
-          </Panel>
-        </>
-      ) : (
-        <Panel variant="elevated">
-          <EmptyState
-            icon="mic-circle-outline"
-            title="No sessions yet"
-            description="Start a live practice to see your scores, trends, and personalised coaching."
-            actionLabel="Start practicing"
-            onAction={() => router.push('/session')}
-          />
-        </Panel>
-      )}
-    </Screen>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  heroCta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    gap: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.primaryBright,
-  },
-  heroCtaPressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.98 }],
-  },
-  heroCtaIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroCtaCopy: {
+  scroll: {
     flex: 1,
-    gap: 3,
+    backgroundColor: colors.backgroundElevated,
   },
-  heroCtaTitle: {
-    ...typography.bodyBold,
-    fontSize: 16,
-    color: colors.textOnPrimary,
-  },
-  heroCtaSubtitle: {
-    ...typography.bodySmall,
-    color: 'rgba(255,255,255,0.7)',
-  },
-  kpiGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-  },
-  actionsWrap: {
-    gap: spacing.sm,
-  },
-  sectionLabel: {
-    ...typography.overline,
-    color: colors.textDim,
-    marginBottom: 2,
-  },
-  actionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-  },
-  actionCard: {
-    width: '47%',
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: spacing.lg,
-    gap: spacing.sm,
-    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
-  },
-  actionCardPressed: {
-    backgroundColor: colors.surfaceHover,
-    transform: [{ scale: 0.97 }],
-  },
-  actionIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
-    borderWidth: 1,
+  scrollContent: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 2,
+    paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
   },
-  actionLabel: {
-    ...typography.bodyBold,
-    fontSize: 15,
+  inner: {
+    width: '100%',
+    maxWidth: layout.maxAppContentWidth,
+    gap: spacing.xxl,
   },
-  actionSub: {
-    ...typography.bodySmall,
-    color: colors.textDim,
+  devHint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.warning,
+    marginTop: -spacing.lg,
+  },
+  kpiRow: {
+    gap: spacing.md,
+  },
+  kpiRowGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  kpiRowWide: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+  },
+  kpiItem: {
+    flexGrow: 1,
+    minWidth: 150,
+  },
+  kpiItemHalf: {
+    flexBasis: '47%',
+    maxWidth: '48%',
+  },
+  sectionTitle: {
+    fontFamily: fonts.displayMedium,
+    fontSize: 18,
+    color: colors.text,
+    marginTop: spacing.sm,
+  },
+  actionsList: {
+    gap: spacing.md,
+  },
+  chartsSection: {
+    gap: spacing.lg,
+    marginTop: spacing.sm,
+  },
+  emptyPanel: {
+    marginTop: spacing.sm,
   },
   link: {
-    ...typography.bodySmall,
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
     color: colors.primary,
-    fontFamily: typography.bodyBold.fontFamily,
   },
 });

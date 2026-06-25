@@ -1,17 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 
+import { AppShell } from '../../src/components/layout/AppShell';
 import { DevModeProvider, useDevMode } from '../../src/context/DevModeContext';
 import { VoiceAnalysisProvider } from '../../src/context/VoiceAnalysisContext';
 import { colors } from '../../src/theme/colors';
+import { layout } from '../../src/theme/layout';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 
-const TAB_BAR_HEIGHT = spacing.tabBar; // 62px
+const TAB_BAR_HEIGHT = spacing.tabBar;
 
 function TabNavigator() {
   const { enabled } = useDevMode();
+  const { width } = useWindowDimensions();
+  const hideTabBar = Platform.OS === 'web' && width >= layout.sidebarBreakpoint;
 
   return (
     <Tabs
@@ -20,7 +24,7 @@ function TabNavigator() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: styles.tabLabel,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: hideTabBar ? styles.tabBarHidden : styles.tabBar,
         tabBarBackground: () => <View style={[StyleSheet.absoluteFill, styles.tabBarBg]} />,
         tabBarItemStyle: styles.tabItem,
       }}
@@ -101,13 +105,19 @@ export default function TabLayout() {
   return (
     <DevModeProvider>
       <VoiceAnalysisProvider>
-        <TabNavigator />
+        <AppShell>
+          <TabNavigator />
+        </AppShell>
       </VoiceAnalysisProvider>
     </DevModeProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  tabBarHidden: {
+    display: 'none',
+    height: 0,
+  },
   tabBar: {
     position: 'absolute',
     borderTopWidth: 1,
