@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DevDebugOverlay } from '../../src/components/dev/DevDebugOverlay';
 import { AdvancedAnalyticsPanel } from '../../src/components/AdvancedAnalyticsPanel';
@@ -16,8 +15,8 @@ import { ScoreRing } from '../../src/components/ScoreRing';
 import { SessionSummaryCard } from '../../src/components/SessionSummaryCard';
 import { SingerInsightsPanel } from '../../src/components/SingerInsightsPanel';
 import { GlassCard } from '../../src/components/ui/GlassCard';
-import { MicFAB } from '../../src/components/ui/MicFAB';
 import { PageHeader } from '../../src/components/ui/PageHeader';
+import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
 import { Screen } from '../../src/components/ui/Screen';
 import { SectionHeader } from '../../src/components/ui/SectionHeader';
 import { SegmentedTabs } from '../../src/components/ui/SegmentedTabs';
@@ -31,7 +30,6 @@ import { typography } from '../../src/theme/typography';
 type SessionTab = 'live' | 'stats' | 'coach';
 
 export default function SessionScreen() {
-  const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<SessionTab>('live');
   const { enabled: devMode, flags } = useDevMode();
   const {
@@ -65,8 +63,7 @@ export default function SessionScreen() {
   }, [isActive]);
 
   return (
-    <View style={styles.root}>
-      <Screen contentContainerStyle={styles.scrollExtra}>
+    <Screen>
         <PageHeader
           eyebrow="Live assessment"
           title={isActive ? 'Session in progress' : 'Vocal assessment studio'}
@@ -116,8 +113,14 @@ export default function SessionScreen() {
           <Text style={styles.stageHint}>
             {isActive
               ? 'Maintain steady phrasing — coach intelligence updates continuously.'
-              : 'Press record to begin the live vocal assessment pipeline.'}
+              : 'Start recording to begin the live vocal assessment pipeline.'}
           </Text>
+          <PrimaryButton
+            label={isActive ? 'Stop session' : 'Start recording'}
+            variant={isActive ? 'danger' : 'primary'}
+            onPress={() => (isActive ? void stop() : void start())}
+            style={styles.recordButton}
+          />
         </GlassCard>
 
         <SegmentedTabs
@@ -174,52 +177,11 @@ export default function SessionScreen() {
             )}
           </View>
         ) : null}
-      </Screen>
-
-      <View style={[styles.fabBar, { paddingBottom: insets.bottom + spacing.tabBar }]}>
-        <MicFAB
-          isActive={isActive}
-          onPress={() => (isActive ? void stop() : void start())}
-        />
-      </View>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-  scrollExtra: {
-    gap: spacing.lg,
-    paddingBottom: 160,
-  },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  eyebrow: {
-    ...typography.caption,
-    color: colors.primaryBright,
-  },
-  title: {
-    ...typography.h1,
-    marginTop: spacing.xs,
-  },
-  streakPill: {
-    backgroundColor: colors.warningSoft,
-    borderRadius: 999,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.borderStrong,
-  },
-  streakText: {
-    ...typography.bodyBold,
-    color: colors.warning,
-    fontSize: 13,
-  },
   alert: {
     borderColor: colors.danger,
   },
@@ -239,6 +201,10 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     textAlign: 'center',
   },
+  recordButton: {
+    alignSelf: 'stretch',
+    marginTop: spacing.sm,
+  },
   panel: {
     gap: spacing.lg,
   },
@@ -250,14 +216,5 @@ const styles = StyleSheet.create({
   emptyCoach: {
     ...typography.body,
     textAlign: 'center',
-  },
-  fabBar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    paddingTop: spacing.md,
-    backgroundColor: 'transparent',
   },
 });
