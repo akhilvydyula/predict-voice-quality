@@ -33,9 +33,14 @@ const FOOTER_LINKS = [
   { label: 'Contributing', url: 'https://github.com/akhilvydyula/predict-voice-quality/blob/main/CONTRIBUTING.md' },
 ];
 
-function isActiveRoute(pathname: string, href: string): boolean {
-  const path = href.replace(/^\//, '');
-  if (path === 'dashboard') return pathname === '/' || pathname === '/dashboard' || pathname.endsWith('/dashboard');
+function isActiveRoute(pathname: string, item: NavItem): boolean {
+  const path = (item.href as string).replace(/^\//, '');
+  if (item.key === 'goals' || item.key === 'achievements') {
+    return false;
+  }
+  if (path === 'dashboard') {
+    return pathname === '/' || pathname === '/dashboard' || pathname.endsWith('/dashboard');
+  }
   return pathname.includes(path);
 }
 
@@ -60,7 +65,7 @@ export function AppSidebar() {
       <ScrollView style={styles.navScroll} showsVerticalScrollIndicator={false}>
         <View style={styles.navList}>
           {NAV_ITEMS.map((item) => {
-            const active = isActiveRoute(pathname, item.href as string);
+            const active = isActiveRoute(pathname, item);
             return (
               <Pressable
                 key={item.key}

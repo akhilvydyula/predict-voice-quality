@@ -5,16 +5,16 @@ import { buildDashboardMetrics } from '../../src/analytics/sessionAnalytics';
 import { PerformanceTrendChart } from '../../src/components/analytics/PerformanceTrendChart';
 import { SessionHistoryList } from '../../src/components/analytics/SessionHistoryList';
 import { SkillBreakdownChart } from '../../src/components/analytics/SkillBreakdownChart';
+import { AppPageScroll } from '../../src/components/layout/AppPageScroll';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 import { KpiCard } from '../../src/components/ui/KpiCard';
 import { PageHeader } from '../../src/components/ui/PageHeader';
 import { Panel } from '../../src/components/ui/Panel';
 import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
-import { Screen } from '../../src/components/ui/Screen';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
+import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
-import { colors } from '../../src/theme/colors';
 
 export default function AnalyticsScreen() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function AnalyticsScreen() {
   const metrics = buildDashboardMetrics(profile);
 
   return (
-    <Screen>
+    <AppPageScroll>
       <PageHeader
         eyebrow="Analytics workspace"
         title="Vocal performance intelligence"
@@ -99,7 +99,7 @@ export default function AnalyticsScreen() {
         variant="secondary"
         onPress={() => router.push('/coach')}
       />
-    </Screen>
+    </AppPageScroll>
   );
 }
 

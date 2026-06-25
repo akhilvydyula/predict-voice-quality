@@ -123,7 +123,7 @@ export default function SessionScreen() {
           <PracticeRecordButton
             isRecording={isActive}
             onPress={() => (isActive ? void stop() : void start())}
-            disabled={!isSupported && Boolean(error)}
+            disabled={!isSupported}
             style={styles.recordButton}
           />
         </View>

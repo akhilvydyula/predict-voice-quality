@@ -28,12 +28,9 @@ export function QuickActionRow({ title, description, ctaLabel, route, icon }: Qu
       <View style={styles.copy}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
-        <Pressable
-          onPress={() => router.push(route)}
-          style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
-        >
+        <View style={styles.cta}>
           <Text style={styles.ctaText}>{ctaLabel}</Text>
-        </Pressable>
+        </View>
       </View>
       <Ionicons name="chevron-forward" size={20} color={colors.textDim} />
     </Pressable>
@@ -89,9 +86,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.lg,
     borderRadius: radius.pill,
-  },
-  ctaPressed: {
-    opacity: 0.88,
   },
   ctaText: {
     fontFamily: fonts.bodyBold,

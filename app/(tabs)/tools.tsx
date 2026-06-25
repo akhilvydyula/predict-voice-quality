@@ -6,9 +6,9 @@ import { MetronomePanel } from '../../src/components/tools/MetronomePanel';
 import { RangeMapPanel } from '../../src/components/tools/RangeMapPanel';
 import { ScaleGuidePanel } from '../../src/components/tools/ScaleGuidePanel';
 import { TunerPanel } from '../../src/components/tools/TunerPanel';
+import { AppPageScroll } from '../../src/components/layout/AppPageScroll';
 import { PageHeader } from '../../src/components/ui/PageHeader';
 import { Panel } from '../../src/components/ui/Panel';
-import { Screen } from '../../src/components/ui/Screen';
 import { SectionHeader } from '../../src/components/ui/SectionHeader';
 import { SegmentedTabs } from '../../src/components/ui/SegmentedTabs';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
@@ -50,7 +50,7 @@ export default function ToolsScreen() {
     pitch.frequency !== null ? (frequencyToNote(pitch.frequency)?.midi ?? null) : null;
 
   return (
-    <Screen contentContainerStyle={styles.scroll}>
+    <AppPageScroll>
       <PageHeader
         eyebrow="Professional toolkit"
         title="Vocal operations suite"
@@ -104,15 +104,11 @@ export default function ToolsScreen() {
           }
         />
       ) : null}
-    </Screen>
+    </AppPageScroll>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: {
-    gap: spacing.lg,
-    paddingBottom: 120,
-  },
   hero: {
     gap: spacing.sm,
   },

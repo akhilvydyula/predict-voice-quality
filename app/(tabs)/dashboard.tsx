@@ -130,7 +130,7 @@ export default function DashboardScreen() {
             trend={metrics.totalSessions > 0 ? week.sessionsDelta : `${metrics.weekSessions} this week`}
             trendTone={sessionsTrendTone}
             icon="mic-outline"
-            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+            style={isWideKpi ? styles.kpiItem : [styles.kpiItem, styles.kpiItemHalf]}
           />
           <DashboardKpiCard
             label="Avg score"
@@ -145,7 +145,7 @@ export default function DashboardScreen() {
             }
             trendTone={scoreTrendTone}
             icon="pulse-outline"
-            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+            style={isWideKpi ? styles.kpiItem : [styles.kpiItem, styles.kpiItemHalf]}
           />
           <DashboardKpiCard
             label="Practice time"
@@ -157,7 +157,7 @@ export default function DashboardScreen() {
             }
             trendTone={minutesTrendTone}
             icon="time-outline"
-            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+            style={isWideKpi ? styles.kpiItem : [styles.kpiItem, styles.kpiItemHalf]}
           />
           <DashboardKpiCard
             label="Streak"
@@ -166,14 +166,14 @@ export default function DashboardScreen() {
             trend={streakTrend}
             trendTone={metrics.practiceStreak >= 7 ? 'accent' : 'neutral'}
             icon="flame-outline"
-            style={[styles.kpiItem, !isWideKpi && styles.kpiItemHalf]}
+            style={isWideKpi ? styles.kpiItem : [styles.kpiItem, styles.kpiItemHalf]}
           />
         </View>
 
         <Text style={styles.sectionTitle}>Quick actions</Text>
         <View style={styles.actionsList}>
-          {QUICK_ACTIONS.map((action) => (
-            <QuickActionRow key={action.key} {...action} />
+          {QUICK_ACTIONS.map(({ key, ...action }) => (
+            <QuickActionRow key={key} {...action} />
           ))}
         </View>
 

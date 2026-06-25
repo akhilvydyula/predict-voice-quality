@@ -39,7 +39,11 @@ export function PracticeScoreRing({ score, size = 140 }: PracticeScoreRingProps)
   return (
     <View style={styles.wrap}>
       <View style={[styles.ring, { width: size, height: size }]}>
-        <Svg width={size} height={size} style={styles.svg}>
+        <Svg
+          width={size}
+          height={size}
+          style={Platform.OS === 'web' ? styles.svgWeb : undefined}
+        >
           <Circle
             cx={size / 2}
             cy={size / 2}
@@ -87,12 +91,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  svg: Platform.select({
-    web: { display: 'block', overflow: 'visible' },
-    default: {},
-  }),
+  svgWeb: {
+    overflow: 'visible',
+  },
   center: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },

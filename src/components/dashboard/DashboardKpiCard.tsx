@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Platform, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { colors } from '../../theme/colors';
 import { radius, spacing } from '../../theme/spacing';
@@ -12,7 +12,7 @@ type DashboardKpiCardProps = {
   trend?: string;
   trendTone?: 'up' | 'down' | 'neutral' | 'accent';
   icon: keyof typeof Ionicons.glyphMap;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function DashboardKpiCard({

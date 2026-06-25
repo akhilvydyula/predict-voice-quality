@@ -38,7 +38,11 @@ export function ScoreRing({ score, size = 168 }: ScoreRingProps) {
   return (
     <View style={styles.outer}>
       <View style={[styles.ring, { width: size, height: size }]}>
-        <Svg width={size} height={size} style={styles.svg}>
+        <Svg
+          width={size}
+          height={size}
+          style={Platform.OS === 'web' ? styles.svgWeb : undefined}
+        >
           <Defs>
             <SvgGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <Stop offset="0%" stopColor={colors.primaryBright} />
@@ -98,12 +102,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  svg: Platform.select({
-    web: { display: 'block', overflow: 'visible' },
-    default: {},
-  }),
+  svgWeb: {
+    overflow: 'visible',
+  },
   center: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },

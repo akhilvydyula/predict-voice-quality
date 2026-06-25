@@ -38,13 +38,17 @@ export function PracticePitchDisplay({
   const zoneColor =
     Math.abs(cents) <= 10 ? colors.success : Math.abs(cents) <= 25 ? colors.success : colors.warning;
   const displayFreq =
-    frequency && hasNote ? frequency.toFixed(1) : noteName ? '—' : isActive ? '···' : '—';
+    frequency && hasNote
+      ? `${frequency.toFixed(1)} Hz`
+      : isActive
+        ? '···'
+        : '—';
 
   return (
     <View style={styles.wrap}>
       <Text style={styles.targetLabel}>Target note</Text>
       <Text style={styles.note}>{hasNote ? `${noteName}${octave ?? ''}` : isActive ? '···' : '—'}</Text>
-      <Text style={styles.freq}>{displayFreq}{hasNote && frequency ? ' Hz' : ''}</Text>
+      <Text style={styles.freq}>{displayFreq}</Text>
 
       {inTune ? <Text style={styles.inTune}>In tune!</Text> : <View style={styles.inTuneSpacer} />}
 
