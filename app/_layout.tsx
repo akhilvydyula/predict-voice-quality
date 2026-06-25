@@ -14,13 +14,18 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
-import { colors } from '../src/theme/colors';
+import {
+  AppPreferencesProvider,
+  useAppPreferences,
+} from '../src/context/AppPreferencesContext';
+import { lightColors } from '../src/theme/palettes';
 
 SplashScreen.preventAutoHideAsync();
 
 const FONT_LOAD_TIMEOUT_MS = 4000;
 
-export default function RootLayout() {
+function RootNavigator() {
+  const { statusBarStyle, ready: prefsReady } = useAppPreferences();
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
@@ -46,17 +51,25 @@ export default function RootLayout() {
     return () => clearTimeout(timeout);
   }, []);
 
-  if (!ready) {
-    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  if (!ready || !prefsReady) {
+    return <View style={{ flex: 1, backgroundColor: lightColors.background }} />;
   }
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={statusBarStyle} />
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }}>
         <Stack.Screen name="index" options={{ animation: 'fade' }} />
         <Stack.Screen name="(tabs)" options={{ animation: 'slide_from_right' }} />
       </Stack>
     </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AppPreferencesProvider>
+      <RootNavigator />
+    </AppPreferencesProvider>
   );
 }

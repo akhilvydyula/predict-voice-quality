@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { useMemo } from 'react';
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { AppShell } from '../../src/components/layout/AppShell';
+import { useAppPreferences } from '../../src/context/AppPreferencesContext';
 import { DevModeProvider, useDevMode } from '../../src/context/DevModeContext';
 import { VoiceAnalysisProvider } from '../../src/context/VoiceAnalysisContext';
-import { colors } from '../../src/theme/colors';
 import { layout } from '../../src/theme/layout';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
@@ -15,7 +16,9 @@ const TAB_BAR_HEIGHT = spacing.tabBar;
 function TabNavigator() {
   const { enabled } = useDevMode();
   const { width } = useWindowDimensions();
+  const { colors } = useAppPreferences();
   const hideTabBar = Platform.OS === 'web' && width >= layout.sidebarBreakpoint;
+  const styles = useMemo(() => createTabStyles(colors), [colors]);
 
   return (
     <Tabs
@@ -97,6 +100,8 @@ function TabNavigator() {
           tabBarItemStyle: enabled ? styles.tabItem : { display: 'none', width: 0, height: 0 },
         }}
       />
+      <Tabs.Screen name="goals" options={{ href: null }} />
+      <Tabs.Screen name="achievements" options={{ href: null }} />
     </Tabs>
   );
 }
@@ -113,29 +118,31 @@ export default function TabLayout() {
   );
 }
 
-const styles = StyleSheet.create({
-  tabBarHidden: {
-    display: 'none',
-    height: 0,
-  },
-  tabBar: {
-    position: 'absolute',
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: 'transparent',
-    height: TAB_BAR_HEIGHT,
-    paddingTop: spacing.sm,
-    paddingBottom: Platform.OS === 'ios' ? spacing.md : spacing.sm,
-  },
-  tabBarBg: {
-    backgroundColor: colors.tabBar,
-  },
-  tabItem: {
-    paddingTop: 2,
-  },
-  tabLabel: {
-    ...typography.tabLabel,
-    fontSize: 10,
-    letterSpacing: 0.2,
-  },
-});
+function createTabStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  return StyleSheet.create({
+    tabBarHidden: {
+      display: 'none',
+      height: 0,
+    },
+    tabBar: {
+      position: 'absolute',
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      backgroundColor: 'transparent',
+      height: TAB_BAR_HEIGHT,
+      paddingTop: spacing.sm,
+      paddingBottom: Platform.OS === 'ios' ? spacing.md : spacing.sm,
+    },
+    tabBarBg: {
+      backgroundColor: colors.tabBar,
+    },
+    tabItem: {
+      paddingTop: 2,
+    },
+    tabLabel: {
+      ...typography.tabLabel,
+      fontSize: 10,
+      letterSpacing: 0.2,
+    },
+  });
+}

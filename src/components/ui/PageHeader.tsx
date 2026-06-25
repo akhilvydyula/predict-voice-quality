@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 
@@ -15,6 +15,9 @@ type PageHeaderProps = {
 };
 
 export function PageHeader({ eyebrow, title, subtitle, meta, actions, style }: PageHeaderProps) {
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <View style={[styles.wrap, style]}>
       <View style={styles.copy}>
@@ -28,37 +31,41 @@ export function PageHeader({ eyebrow, title, subtitle, meta, actions, style }: P
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: spacing.lg,
-  },
-  copy: {
-    flex: 1,
-    gap: spacing.xs,
-  },
-  eyebrow: {
-    ...typography.overline,
-    color: colors.primary,
-    fontSize: 10,
-  },
-  title: {
-    ...typography.h1,
-  },
-  subtitle: {
-    ...typography.body,
-    maxWidth: 560,
-  },
-  meta: {
-    ...typography.bodySmall,
-    color: colors.textDim,
-    marginTop: spacing.xs,
-  },
-  actions: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingTop: 2,
-  },
-});
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  return StyleSheet.create({
+    wrap: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      gap: spacing.lg,
+    },
+    copy: {
+      flex: 1,
+      gap: spacing.xs,
+    },
+    eyebrow: {
+      ...typography.overline,
+      color: colors.primary,
+      fontSize: 10,
+    },
+    title: {
+      ...typography.h1,
+      color: colors.text,
+    },
+    subtitle: {
+      ...typography.body,
+      color: colors.textSecondary,
+      maxWidth: 560,
+    },
+    meta: {
+      ...typography.bodySmall,
+      color: colors.textDim,
+      marginTop: spacing.xs,
+    },
+    actions: {
+      alignItems: 'flex-end',
+      justifyContent: 'center',
+      paddingTop: 2,
+    },
+  });
+}

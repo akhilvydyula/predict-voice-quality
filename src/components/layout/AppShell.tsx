@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { AppSidebar } from './AppSidebar';
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { layout } from '../../theme/layout';
 
 type AppShellProps = {
@@ -17,6 +17,8 @@ export function useAppShellLayout() {
 
 export function AppShell({ children }: AppShellProps) {
   const { showSidebar } = useAppShellLayout();
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   if (!showSidebar) {
     return <View style={styles.mobileRoot}>{children}</View>;
@@ -30,18 +32,20 @@ export function AppShell({ children }: AppShellProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  mobileRoot: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  desktopRoot: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: colors.backgroundElevated,
-  },
-  main: {
-    flex: 1,
-    backgroundColor: colors.backgroundElevated,
-  },
-});
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  return StyleSheet.create({
+    mobileRoot: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    desktopRoot: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: colors.backgroundElevated,
+    },
+    main: {
+      flex: 1,
+      backgroundColor: colors.backgroundElevated,
+    },
+  });
+}

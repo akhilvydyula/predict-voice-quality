@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { AgentWorkflowPanel } from '../../src/components/agent/AgentWorkflowPanel';
+import { GoalsAchievementsTabs } from '../../src/components/goals/GoalsAchievementsTabs';
 import { AgentCoachPanel } from '../../src/components/AgentCoachPanel';
 import { LearningPathPanel } from '../../src/components/LearningPathPanel';
 import { PracticePlanPanel } from '../../src/components/PracticePlanPanel';
@@ -16,7 +18,7 @@ import { typography } from '../../src/theme/typography';
 
 export default function CoachScreen() {
   const router = useRouter();
-  const { profile, agentReport } = useVoiceSession();
+  const { profile, agentReport, agentWorkflow } = useVoiceSession();
   const report = agentReport;
 
   return (
@@ -26,6 +28,8 @@ export default function CoachScreen() {
         title="Vocal development program"
         subtitle="Personalized training plans, milestone tracking, and session memory for structured vocalist development."
       />
+
+      <GoalsAchievementsTabs />
 
       {profile ? (
         <View style={styles.statsRow}>
@@ -63,6 +67,8 @@ export default function CoachScreen() {
           </Text>
         </Panel>
       )}
+
+      {agentWorkflow ? <AgentWorkflowPanel workflow={agentWorkflow} /> : null}
 
       {report ? (
         <>

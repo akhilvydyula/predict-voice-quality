@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { usePathname, useRouter, type Href } from 'expo-router';
 import * as Linking from 'expo-linking';
+import { useMemo } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { layout } from '../../theme/layout';
 import { radius, spacing } from '../../theme/spacing';
 import { fonts } from '../../theme/typography';
@@ -23,8 +24,8 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'analytics', label: 'Analytics', href: '/analytics', icon: 'bar-chart-outline', iconActive: 'bar-chart' },
   { key: 'tools', label: 'Toolkit', href: '/tools', icon: 'construct-outline', iconActive: 'construct' },
   { key: 'coach', label: 'Coach', href: '/coach', icon: 'school-outline', iconActive: 'school' },
-  { key: 'goals', label: 'Goals', href: '/coach', icon: 'flag-outline', iconActive: 'flag' },
-  { key: 'achievements', label: 'Achievements', href: '/coach', icon: 'trophy-outline', iconActive: 'trophy' },
+  { key: 'goals', label: 'Goals', href: '/goals' as Href, icon: 'flag-outline', iconActive: 'flag' },
+  { key: 'achievements', label: 'Achievements', href: '/achievements' as Href, icon: 'trophy-outline', iconActive: 'trophy' },
 ];
 
 const FOOTER_LINKS = [
@@ -35,9 +36,6 @@ const FOOTER_LINKS = [
 
 function isActiveRoute(pathname: string, item: NavItem): boolean {
   const path = (item.href as string).replace(/^\//, '');
-  if (item.key === 'goals' || item.key === 'achievements') {
-    return false;
-  }
   if (path === 'dashboard') {
     return pathname === '/' || pathname === '/dashboard' || pathname.endsWith('/dashboard');
   }
@@ -48,6 +46,8 @@ export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const openLink = (url: string) => {
     void Linking.openURL(url);
@@ -112,9 +112,10 @@ export function AppSidebar() {
   );
 }
 
-const webShadow = Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {};
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  const webShadow = Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {};
 
-const styles = StyleSheet.create({
+  return StyleSheet.create({
   shell: {
     width: layout.sidebarWidth,
     backgroundColor: colors.surface,
@@ -231,4 +232,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xs,
     marginTop: spacing.xs,
   },
-});
+  });
+}

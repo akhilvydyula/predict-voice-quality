@@ -1,7 +1,8 @@
 import * as Haptics from 'expo-haptics';
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { layout } from '../../theme/layout';
 import { radius, spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
@@ -20,6 +21,8 @@ export function SegmentedTabs<T extends string>({
   onChange,
   scrollable = false,
 }: SegmentedTabsProps<T>) {
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const wide = tabs.length > 3;
 
   const renderTabs = () =>
@@ -69,75 +72,77 @@ export function SegmentedTabs<T extends string>({
   );
 }
 
-const trackShell = {
-  flexDirection: 'row' as const,
-  backgroundColor: colors.surfaceElevated,
-  borderRadius: radius.md,
-  padding: spacing.xs,
-  borderWidth: 1,
-  borderColor: colors.border,
-};
-
-const styles = StyleSheet.create({
-  track: trackShell,
-  trackCompact: {
-    alignSelf: 'center',
-    width: '100%',
-    maxWidth: layout.maxSegmentedWidth,
-  },
-  trackWide: {
-    width: '100%',
-    alignSelf: 'stretch',
-  },
-  scrollOuter: {
-    width: '100%',
-    alignSelf: 'stretch',
-    ...trackShell,
-    padding: 0,
-  },
-  scrollContent: {
-    flexDirection: 'row',
-    gap: spacing.xs,
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  const trackShell = {
+    flexDirection: 'row' as const,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: radius.md,
     padding: spacing.xs,
-  },
-  tab: {
-    minHeight: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: radius.sm,
-  },
-  tabCompact: {
-    flex: 1,
-    paddingHorizontal: spacing.sm,
-  },
-  tabWide: {
-    flex: 1,
-    minWidth: 0,
-    paddingHorizontal: spacing.xs,
-  },
-  tabScrollable: {
-    flexGrow: 0,
-    flexShrink: 0,
-    minWidth: 72,
-    paddingHorizontal: spacing.md,
-  },
-  tabActive: {
-    backgroundColor: colors.primarySoft,
     borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  label: {
-    ...typography.tabLabel,
-    fontSize: 13,
-    color: colors.textMuted,
-    fontFamily: typography.bodyMedium.fontFamily,
-    textAlign: 'center',
-  },
-  labelWide: {
-    fontSize: 12,
-  },
-  labelActive: {
-    color: colors.primary,
-    fontFamily: typography.bodyBold.fontFamily,
-  },
-});
+    borderColor: colors.border,
+  };
+
+  return StyleSheet.create({
+    track: trackShell,
+    trackCompact: {
+      alignSelf: 'center',
+      width: '100%',
+      maxWidth: layout.maxSegmentedWidth,
+    },
+    trackWide: {
+      width: '100%',
+      alignSelf: 'stretch',
+    },
+    scrollOuter: {
+      width: '100%',
+      alignSelf: 'stretch',
+      ...trackShell,
+      padding: 0,
+    },
+    scrollContent: {
+      flexDirection: 'row',
+      gap: spacing.xs,
+      padding: spacing.xs,
+    },
+    tab: {
+      minHeight: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: radius.sm,
+    },
+    tabCompact: {
+      flex: 1,
+      paddingHorizontal: spacing.sm,
+    },
+    tabWide: {
+      flex: 1,
+      minWidth: 0,
+      paddingHorizontal: spacing.xs,
+    },
+    tabScrollable: {
+      flexGrow: 0,
+      flexShrink: 0,
+      minWidth: 72,
+      paddingHorizontal: spacing.md,
+    },
+    tabActive: {
+      backgroundColor: colors.primarySoft,
+      borderWidth: 1,
+      borderColor: colors.primary,
+    },
+    label: {
+      ...typography.tabLabel,
+      fontSize: 13,
+      color: colors.textMuted,
+      fontFamily: typography.bodyMedium.fontFamily,
+      textAlign: 'center',
+    },
+    labelWide: {
+      fontSize: 12,
+    },
+    labelActive: {
+      color: colors.primary,
+      fontFamily: typography.bodyBold.fontFamily,
+    },
+  });
+}

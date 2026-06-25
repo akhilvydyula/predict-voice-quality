@@ -34,6 +34,8 @@ export function ScoreRing({ score, size = 168 }: ScoreRingProps) {
 
   const ringColor =
     score >= 75 ? colors.success : score >= 50 ? colors.warning : colors.primaryBright;
+  const center = size / 2;
+  const progressOffset = circumference * (1 - score / 100);
 
   return (
     <View style={styles.outer}>
@@ -50,26 +52,41 @@ export function ScoreRing({ score, size = 168 }: ScoreRingProps) {
             </SvgGradient>
           </Defs>
           <Circle
-            cx={size / 2}
-            cy={size / 2}
+            cx={center}
+            cy={center}
             r={radius}
             stroke={colors.backgroundElevated}
             strokeWidth={stroke}
             fill="none"
           />
-          <AnimatedCircle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke={score > 0 ? 'url(#scoreGrad)' : colors.border}
-            strokeWidth={stroke}
-            fill="none"
-            strokeDasharray={`${circumference} ${circumference}`}
-            animatedProps={animatedProps}
-            strokeLinecap="round"
-            rotation={-90}
-            origin={`${size / 2}, ${size / 2}`}
-          />
+          {Platform.OS === 'web' ? (
+            <Circle
+              cx={center}
+              cy={center}
+              r={radius}
+              stroke={score > 0 ? ringColor : colors.border}
+              strokeWidth={stroke}
+              fill="none"
+              strokeDasharray={`${circumference} ${circumference}`}
+              strokeDashoffset={progressOffset}
+              strokeLinecap="round"
+              transform={`rotate(-90 ${center} ${center})`}
+            />
+          ) : (
+            <AnimatedCircle
+              cx={center}
+              cy={center}
+              r={radius}
+              stroke={score > 0 ? 'url(#scoreGrad)' : colors.border}
+              strokeWidth={stroke}
+              fill="none"
+              strokeDasharray={`${circumference} ${circumference}`}
+              animatedProps={animatedProps}
+              strokeLinecap="round"
+              rotation={-90}
+              origin={`${center}, ${center}`}
+            />
+          )}
         </Svg>
         <View style={styles.center} pointerEvents="none">
           <Text style={[styles.score, score > 0 && { color: ringColor }]}>

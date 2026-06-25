@@ -6,6 +6,7 @@ import { useApiSync } from '../../src/api/useApiSync';
 import { getApiBaseUrl, isApiConfigured } from '../../src/api/config';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
+import { AgentWorkflowPanel } from '../../src/components/agent/AgentWorkflowPanel';
 import { JsonPanel } from '../../src/components/dev/JsonPanel';
 import { GlassCard } from '../../src/components/ui/GlassCard';
 import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
@@ -114,6 +115,20 @@ export default function ArchitectScreen() {
       <JsonPanel title="api_state" data={apiState} />
       {remoteStatus ? <JsonPanel title="remote_status" data={remoteStatus} /> : null}
       {remoteHistory ? <JsonPanel title="remote_sessions" data={remoteHistory} /> : null}
+
+      <SectionHeader title="Agent workflow" subtitle="Last post-session orchestration run" />
+      <GlassCard padding={spacing.lg}>
+        <AgentWorkflowPanel workflow={session.agentWorkflow} compact />
+        {!session.agentWorkflow ? (
+          <Text style={styles.hint}>
+            Complete a practice session to watch specialist agents analyze, plan, and narrate your
+            coaching report.
+          </Text>
+        ) : null}
+        {session.agentWorkflow ? (
+          <JsonPanel title="workflow_run" data={session.agentWorkflow} />
+        ) : null}
+      </GlassCard>
 
       <SectionHeader title="Audio pipeline" subtitle="Signal → metrics → agent" />
       <View style={styles.pipeline}>
@@ -281,5 +296,10 @@ const styles = StyleSheet.create({
   },
   apiActions: {
     gap: spacing.sm,
+  },
+  hint: {
+    ...typography.bodySmall,
+    color: colors.textMuted,
+    marginTop: spacing.sm,
   },
 });

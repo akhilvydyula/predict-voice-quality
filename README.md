@@ -156,7 +156,7 @@ flowchart LR
   client -->|"build & deploy"| deploy
 ```
 
-Details: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+Details: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [Agent workflow](./docs/AGENT_WORKFLOW.md)
 
 ---
 

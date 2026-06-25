@@ -70,7 +70,7 @@ export function PerformanceTrendChart({ points, height = 180 }: PerformanceTrend
         {coords.map((point, index) =>
           index % Math.ceil(points.length / 4) === 0 || index === points.length - 1 ? (
             <SvgText
-              key={`label-${point.label}`}
+              key={`label-${index}`}
               x={point.x}
               y={height - 8}
               fill={colors.textDim}

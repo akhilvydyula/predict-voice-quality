@@ -133,8 +133,19 @@ export class VocalCoachAgent {
       await this.initialize();
     }
 
+    await this.applySessionToProfile(summary, advanced);
+    return this.finalizeReport(summary, advanced);
+  }
+
+  async applySessionToProfile(
+    summary: SessionSummary,
+    advanced: AdvancedInsights
+  ): Promise<SingerProfile> {
+    if (!this.loaded) {
+      await this.initialize();
+    }
+
     const stored = sessionFromSummary(summary, advanced);
-    const previousOverall = this.profile.sessions[0]?.overall ?? null;
 
     this.profile = {
       ...this.profile,
@@ -148,7 +159,31 @@ export class VocalCoachAgent {
     this.profile.milestonesUnlocked = computeUnlockedMilestones(this.profile, summary, advanced);
 
     await saveSingerProfile(this.profile);
+    return this.profile;
+  }
 
+  previewPracticePlan(
+    summary: SessionSummary,
+    advanced: AdvancedInsights,
+    profile: SingerProfile
+  ): PracticeStep[] {
+    return buildPracticePlan(summary, advanced, profile);
+  }
+
+  previewMilestones(
+    summary: SessionSummary,
+    advanced: AdvancedInsights,
+    profile: SingerProfile
+  ): LearningMilestone[] {
+    return buildMilestones(profile, summary, advanced);
+  }
+
+  previewWeeklyGoal(profile: SingerProfile): string {
+    return buildWeeklyGoal(profile);
+  }
+
+  finalizeReport(summary: SessionSummary, advanced: AdvancedInsights): AgentReport {
+    const previousOverall = this.profile.sessions[1]?.overall ?? null;
     return this.buildReport(summary, advanced, previousOverall);
   }
 
@@ -376,17 +411,27 @@ function buildMilestones(
       case 'first_session':
         progress = profile.sessions.length;
         break;
+      case 'overall_75':
+        progress =
+          summary?.metrics.overall ??
+          (profile.sessions.length > 0
+            ? Math.max(...profile.sessions.map((s) => s.overall))
+            : 0);
+        break;
       case 'pitch_70':
-        progress = summary?.metrics.pitchAccuracy ?? profile.skillAverages.pitchAccuracy;
+        progress =
+          summary?.metrics.pitchAccuracy ??
+          (profile.sessions.length > 0
+            ? Math.max(...profile.sessions.map((s) => s.pitchAccuracy))
+            : profile.skillAverages.pitchAccuracy);
         break;
       case 'streak_3':
         progress = profile.practiceStreak;
         break;
       case 'hold_3s':
-        progress = summary?.insights.longestHoldSeconds ?? 0;
-        break;
-      case 'overall_75':
-        progress = summary?.metrics.overall ?? 0;
+        progress = unlocked.has(def.id)
+          ? def.target
+          : (summary?.insights.longestHoldSeconds ?? 0);
         break;
       case 'sessions_10':
         progress = profile.sessions.length;
@@ -421,4 +466,14 @@ function isThisWeek(isoDate: string): boolean {
   const weekAgo = new Date(now);
   weekAgo.setDate(now.getDate() - 7);
   return date >= weekAgo;
+}
+
+/** Milestones for profile-backed goals & achievements screens. */
+export function getMilestonesForProfile(profile: SingerProfile | null): LearningMilestone[] {
+  return buildMilestones(profile ?? EMPTY_PROFILE, null, null);
+}
+
+/** Weekly goal copy for goals screen. */
+export function getWeeklyGoalForProfile(profile: SingerProfile | null): string {
+  return buildWeeklyGoal(profile ?? EMPTY_PROFILE);
 }

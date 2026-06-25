@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Platform, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { radius, spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 
@@ -26,6 +26,8 @@ export function Panel({
   contentStyle,
   variant = 'default',
 }: PanelProps) {
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const hasHeader = Boolean(title || subtitle || headerRight);
 
   return (
@@ -59,44 +61,48 @@ export function Panel({
   );
 }
 
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    overflow: 'hidden',
-    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
-  },
-  elevated: {
-    backgroundColor: colors.surfaceElevated,
-    borderColor: colors.borderStrong,
-  },
-  inset: {
-    backgroundColor: colors.backgroundElevated,
-    borderColor: colors.border,
-  },
-  body: {
-    width: '100%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    gap: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    paddingBottom: spacing.md,
-  },
-  headerCopy: {
-    flex: 1,
-    gap: 3,
-  },
-  title: {
-    ...typography.h3,
-    fontSize: 15,
-  },
-  subtitle: {
-    ...typography.bodySmall,
-  },
-});
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  return StyleSheet.create({
+    base: {
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      overflow: 'hidden',
+      ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
+    },
+    elevated: {
+      backgroundColor: colors.surfaceElevated,
+      borderColor: colors.borderStrong,
+    },
+    inset: {
+      backgroundColor: colors.backgroundElevated,
+      borderColor: colors.border,
+    },
+    body: {
+      width: '100%',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      gap: spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingBottom: spacing.md,
+    },
+    headerCopy: {
+      flex: 1,
+      gap: 3,
+    },
+    title: {
+      ...typography.h3,
+      fontSize: 15,
+      color: colors.text,
+    },
+    subtitle: {
+      ...typography.bodySmall,
+      color: colors.textSecondary,
+    },
+  });
+}

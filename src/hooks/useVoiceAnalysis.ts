@@ -12,6 +12,8 @@ import { isApiConfigured } from '../api/config';
 import { getDeviceId } from '../api/deviceId';
 import { AdvancedInsights, analyzeAdvanced, emptyAdvancedInsights } from '../audio/advancedAnalytics';
 import { VocalCoachAgent, AgentLiveGuidance, AgentReport } from '../agent/vocalCoachAgent';
+import { runPostSessionWorkflow } from '../agent/workflow/vocalCoachWorkflow';
+import { WorkflowRun } from '../agent/workflow/types';
 import { SingerProfile } from '../agent/singerProfile';
 import { frequencyToNote } from '../audio/musicTheory';
 import { WebMicrophoneStream } from '../audio/webMicrophoneStream';
@@ -123,6 +125,7 @@ export function useVoiceAnalysis(options?: { verboseLogging?: boolean; apiSyncEn
   const [pitchHistory, setPitchHistory] = useState<PitchHistoryPoint[]>([]);
   const [sessionSummary, setSessionSummary] = useState<SessionSummary | null>(null);
   const [agentReport, setAgentReport] = useState<AgentReport | null>(null);
+  const [agentWorkflow, setAgentWorkflow] = useState<WorkflowRun | null>(null);
   const [liveGuidance, setLiveGuidance] = useState<AgentLiveGuidance | null>(null);
   const [profile, setProfile] = useState<SingerProfile | null>(null);
   const [volume, setVolume] = useState(0);
@@ -341,8 +344,14 @@ export function useVoiceAnalysis(options?: { verboseLogging?: boolean; apiSyncEn
       setAdvanced(finalAdvanced);
 
       if (agentReadyRef.current) {
-        const report = await agentRef.current.processSessionEnd(summary, finalAdvanced);
+        const { report, workflow } = await runPostSessionWorkflow(
+          agentRef.current,
+          summary,
+          finalAdvanced,
+          setAgentWorkflow
+        );
         setAgentReport(report);
+        setAgentWorkflow(workflow);
         setProfile(agentRef.current.getProfile());
 
         if (apiSyncEnabled && isApiConfigured() && summary.metrics.overall > 0) {
@@ -395,6 +404,7 @@ export function useVoiceAnalysis(options?: { verboseLogging?: boolean; apiSyncEn
       pitchHistory,
       sessionSummary,
       agentReport,
+      agentWorkflow,
       liveGuidance,
       profile,
       volume,
@@ -415,6 +425,7 @@ export function useVoiceAnalysis(options?: { verboseLogging?: boolean; apiSyncEn
       pitchHistory,
       sessionSummary,
       agentReport,
+      agentWorkflow,
       liveGuidance,
       profile,
       volume,

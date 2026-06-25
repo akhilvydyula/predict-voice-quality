@@ -49,6 +49,6 @@ export const PIPELINE_LAYERS = [
   { id: 'yin', label: 'YIN pitch', detail: 'Monophonic F0 · 80–1000 Hz singing range' },
   { id: 'metrics', label: 'Voice metrics', detail: 'Pitch, stability, breath, tone, vibrato, dynamics' },
   { id: 'advanced', label: 'Advanced analytics', detail: 'Register, drift, fatigue, phrase consistency' },
-  { id: 'agent', label: 'Vocal coach agent', detail: 'Live guidance · plans · AsyncStorage profile' },
+  { id: 'agent', label: 'Vocal coach agent', detail: 'Live guidance · multi-agent workflow · AsyncStorage profile' },
   { id: 'api', label: 'Cloud API', detail: 'Session sync · profile backup · optional x-api-key' },
 ] as const;

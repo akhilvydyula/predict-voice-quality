@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAppShellLayout } from './AppShell';
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { layout } from '../../theme/layout';
 import { spacing } from '../../theme/spacing';
 
@@ -16,6 +16,8 @@ type AppPageScrollProps = {
 export function AppPageScroll({ children, contentContainerStyle }: AppPageScrollProps) {
   const insets = useSafeAreaInsets();
   const { showSidebar } = useAppShellLayout();
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView
@@ -36,18 +38,20 @@ export function AppPageScroll({ children, contentContainerStyle }: AppPageScroll
   );
 }
 
-const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    backgroundColor: colors.backgroundElevated,
-  },
-  scrollContent: {
-    alignItems: 'center',
-    paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
-  },
-  inner: {
-    width: '100%',
-    maxWidth: layout.maxAppContentWidth,
-    gap: spacing.lg,
-  },
-});
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  return StyleSheet.create({
+    scroll: {
+      flex: 1,
+      backgroundColor: colors.backgroundElevated,
+    },
+    scrollContent: {
+      alignItems: 'center',
+      paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
+    },
+    inner: {
+      width: '100%',
+      maxWidth: layout.maxAppContentWidth,
+      gap: spacing.lg,
+    },
+  });
+}

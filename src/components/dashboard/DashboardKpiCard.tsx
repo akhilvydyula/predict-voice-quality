@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
 import { Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-import { colors } from '../../theme/colors';
+import { useAppPreferences } from '../../context/AppPreferencesContext';
 import { radius, spacing } from '../../theme/spacing';
 import { fonts } from '../../theme/typography';
 
@@ -24,6 +25,8 @@ export function DashboardKpiCard({
   icon,
   style,
 }: DashboardKpiCardProps) {
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const trendColor =
     trendTone === 'up'
       ? colors.success
@@ -50,58 +53,60 @@ export function DashboardKpiCard({
   );
 }
 
-const webShadow = Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {};
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  const webShadow = Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {};
 
-const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    minWidth: 160,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.xl,
-    gap: spacing.sm,
-    ...webShadow,
-  },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  label: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 13,
-    color: colors.textSecondary,
-  },
-  iconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.sm,
-    backgroundColor: colors.primarySoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  valueRow: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: spacing.xs,
-  },
-  value: {
-    fontFamily: fonts.display,
-    fontSize: 32,
-    lineHeight: 38,
-    letterSpacing: -0.8,
-    color: colors.text,
-  },
-  suffix: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  trend: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12,
-    lineHeight: 18,
-  },
-});
+  return StyleSheet.create({
+    card: {
+      flex: 1,
+      minWidth: 160,
+      backgroundColor: colors.surface,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: spacing.xl,
+      gap: spacing.sm,
+      ...webShadow,
+    },
+    topRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    label: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 13,
+      color: colors.textSecondary,
+    },
+    iconWrap: {
+      width: 32,
+      height: 32,
+      borderRadius: radius.sm,
+      backgroundColor: colors.primarySoft,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    valueRow: {
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      gap: spacing.xs,
+    },
+    value: {
+      fontFamily: fonts.display,
+      fontSize: 32,
+      lineHeight: 38,
+      letterSpacing: -0.8,
+      color: colors.text,
+    },
+    suffix: {
+      fontFamily: fonts.body,
+      fontSize: 14,
+      color: colors.textMuted,
+    },
+    trend: {
+      fontFamily: fonts.bodyMedium,
+      fontSize: 12,
+      lineHeight: 18,
+    },
+  });
+}

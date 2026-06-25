@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -14,12 +15,12 @@ import { DashboardKpiCard } from '../../src/components/dashboard/DashboardKpiCar
 import { QuickActionRow } from '../../src/components/dashboard/QuickActionRow';
 import { AppTopBar } from '../../src/components/layout/AppTopBar';
 import { useAppShellLayout } from '../../src/components/layout/AppShell';
+import { useAppPreferences } from '../../src/context/AppPreferencesContext';
 import { EmptyState } from '../../src/components/ui/EmptyState';
 import { Panel } from '../../src/components/ui/Panel';
 import { StatusBadge } from '../../src/components/ui/StatusBadge';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
-import { colors } from '../../src/theme/colors';
 import { layout } from '../../src/theme/layout';
 import { spacing } from '../../src/theme/spacing';
 import { fonts } from '../../src/theme/typography';
@@ -64,6 +65,8 @@ export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { showSidebar } = useAppShellLayout();
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { enabled: devMode, registerUnlockTap } = useDevMode();
   const { profile, isActive } = useVoiceSession();
   const metrics = buildDashboardMetrics(profile);
@@ -215,64 +218,66 @@ export default function DashboardScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    backgroundColor: colors.backgroundElevated,
-  },
-  scrollContent: {
-    alignItems: 'center',
-    paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
-  },
-  inner: {
-    width: '100%',
-    maxWidth: layout.maxAppContentWidth,
-    gap: spacing.xxl,
-  },
-  devHint: {
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: colors.warning,
-    marginTop: -spacing.lg,
-  },
-  kpiRow: {
-    gap: spacing.md,
-  },
-  kpiRowGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  kpiRowWide: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-  },
-  kpiItem: {
-    flexGrow: 1,
-    minWidth: 150,
-  },
-  kpiItemHalf: {
-    flexBasis: '47%',
-    maxWidth: '48%',
-  },
-  sectionTitle: {
-    fontFamily: fonts.displayMedium,
-    fontSize: 18,
-    color: colors.text,
-    marginTop: spacing.sm,
-  },
-  actionsList: {
-    gap: spacing.md,
-  },
-  chartsSection: {
-    gap: spacing.lg,
-    marginTop: spacing.sm,
-  },
-  emptyPanel: {
-    marginTop: spacing.sm,
-  },
-  link: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: colors.primary,
-  },
-});
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  return StyleSheet.create({
+    scroll: {
+      flex: 1,
+      backgroundColor: colors.backgroundElevated,
+    },
+    scrollContent: {
+      alignItems: 'center',
+      paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
+    },
+    inner: {
+      width: '100%',
+      maxWidth: layout.maxAppContentWidth,
+      gap: spacing.xxl,
+    },
+    devHint: {
+      fontFamily: fonts.body,
+      fontSize: 12,
+      color: colors.warning,
+      marginTop: -spacing.lg,
+    },
+    kpiRow: {
+      gap: spacing.md,
+    },
+    kpiRowGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    kpiRowWide: {
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+    },
+    kpiItem: {
+      flexGrow: 1,
+      minWidth: 150,
+    },
+    kpiItemHalf: {
+      flexBasis: '47%',
+      maxWidth: '48%',
+    },
+    sectionTitle: {
+      fontFamily: fonts.displayMedium,
+      fontSize: 18,
+      color: colors.text,
+      marginTop: spacing.sm,
+    },
+    actionsList: {
+      gap: spacing.md,
+    },
+    chartsSection: {
+      gap: spacing.lg,
+      marginTop: spacing.sm,
+    },
+    emptyPanel: {
+      marginTop: spacing.sm,
+    },
+    link: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 13,
+      color: colors.primary,
+    },
+  });
+}

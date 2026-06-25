@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -15,14 +15,15 @@ import { PracticeRecordButton } from '../../src/components/practice/PracticeReco
 import { PracticeScoreRing } from '../../src/components/practice/PracticeScoreRing';
 import { PracticeScreenHeader } from '../../src/components/practice/PracticeScreenHeader';
 import { PracticePlanPanel } from '../../src/components/PracticePlanPanel';
+import { AgentWorkflowPanel } from '../../src/components/agent/AgentWorkflowPanel';
 import { SessionSummaryCard } from '../../src/components/SessionSummaryCard';
 import { SingerInsightsPanel } from '../../src/components/SingerInsightsPanel';
 import { useAppShellLayout } from '../../src/components/layout/AppShell';
+import { useAppPreferences } from '../../src/context/AppPreferencesContext';
 import { Panel } from '../../src/components/ui/Panel';
 import { SegmentedTabs } from '../../src/components/ui/SegmentedTabs';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
-import { colors } from '../../src/theme/colors';
 import { layout } from '../../src/theme/layout';
 import { radius, spacing } from '../../src/theme/spacing';
 import { fonts } from '../../src/theme/typography';
@@ -33,6 +34,8 @@ export default function SessionScreen() {
   const [tab, setTab] = useState<SessionTab>('live');
   const insets = useSafeAreaInsets();
   const { showSidebar } = useAppShellLayout();
+  const { colors } = useAppPreferences();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { enabled: devMode, flags } = useDevMode();
   const {
     isActive,
@@ -45,6 +48,7 @@ export default function SessionScreen() {
     pitchHistory,
     sessionSummary,
     agentReport,
+    agentWorkflow,
     liveGuidance,
     volume,
     error,
@@ -167,6 +171,7 @@ export default function SessionScreen() {
             {sessionSummary && !isActive ? <SessionSummaryCard summary={sessionSummary} /> : null}
             {agentReport ? (
               <>
+                {agentWorkflow ? <AgentWorkflowPanel workflow={agentWorkflow} compact /> : null}
                 <AgentCoachPanel report={agentReport} />
                 <PracticePlanPanel
                   steps={agentReport.practicePlan}
@@ -191,99 +196,101 @@ export default function SessionScreen() {
   );
 }
 
-const webShadow = Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {};
+function createStyles(colors: ReturnType<typeof useAppPreferences>['colors']) {
+  const webShadow = Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {};
 
-const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    backgroundColor: colors.backgroundElevated,
-  },
-  scrollContent: {
-    alignItems: 'center',
-    paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
-  },
-  inner: {
-    width: '100%',
-    maxWidth: layout.maxAppContentWidth,
-    gap: spacing.lg,
-  },
-  titleBlock: {
-    gap: spacing.xs,
-    marginBottom: spacing.sm,
-  },
-  title: {
-    fontFamily: fonts.display,
-    fontSize: 28,
-    lineHeight: 34,
-    letterSpacing: -0.5,
-    color: colors.text,
-  },
-  subtitle: {
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
-    color: colors.textSecondary,
-  },
-  alertBanner: {
-    backgroundColor: colors.dangerSoft,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(239,68,68,0.25)',
-    padding: spacing.md,
-  },
-  alertText: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: colors.danger,
-    lineHeight: 19,
-  },
-  bannerWrap: {
-    marginBottom: spacing.xs,
-  },
-  stageCard: {
-    width: '100%',
-    alignItems: 'center',
-    gap: spacing.lg,
-    padding: spacing.xxl,
-    paddingVertical: spacing.xxxl,
-    borderRadius: radius.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    position: 'relative',
-    overflow: 'hidden',
-    ...webShadow,
-  },
-  recordButton: {
-    marginTop: spacing.md,
-    maxWidth: layout.maxActionWidth,
-  },
-  panel: {
-    gap: spacing.lg,
-    marginTop: spacing.sm,
-  },
-  metricsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
-  },
-  emptyCoach: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-    gap: spacing.sm,
-  },
-  emptyCoachTitle: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  emptyCoachText: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 21,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    maxWidth: 320,
-  },
-});
+  return StyleSheet.create({
+    scroll: {
+      flex: 1,
+      backgroundColor: colors.backgroundElevated,
+    },
+    scrollContent: {
+      alignItems: 'center',
+      paddingHorizontal: Platform.OS === 'web' ? spacing.xxl : spacing.screen,
+    },
+    inner: {
+      width: '100%',
+      maxWidth: layout.maxAppContentWidth,
+      gap: spacing.lg,
+    },
+    titleBlock: {
+      gap: spacing.xs,
+      marginBottom: spacing.sm,
+    },
+    title: {
+      fontFamily: fonts.display,
+      fontSize: 28,
+      lineHeight: 34,
+      letterSpacing: -0.5,
+      color: colors.text,
+    },
+    subtitle: {
+      fontFamily: fonts.body,
+      fontSize: 15,
+      lineHeight: 22,
+      color: colors.textSecondary,
+    },
+    alertBanner: {
+      backgroundColor: colors.dangerSoft,
+      borderRadius: radius.md,
+      borderWidth: 1,
+      borderColor: 'rgba(239,68,68,0.25)',
+      padding: spacing.md,
+    },
+    alertText: {
+      fontFamily: fonts.body,
+      fontSize: 13,
+      color: colors.danger,
+      lineHeight: 19,
+    },
+    bannerWrap: {
+      marginBottom: spacing.xs,
+    },
+    stageCard: {
+      width: '100%',
+      alignItems: 'center',
+      gap: spacing.lg,
+      padding: spacing.xxl,
+      paddingVertical: spacing.xxxl,
+      borderRadius: radius.xl,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      position: 'relative',
+      overflow: 'hidden',
+      ...webShadow,
+    },
+    recordButton: {
+      marginTop: spacing.md,
+      maxWidth: layout.maxActionWidth,
+    },
+    panel: {
+      gap: spacing.lg,
+      marginTop: spacing.sm,
+    },
+    metricsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.md,
+    },
+    emptyCoach: {
+      alignItems: 'center',
+      paddingVertical: spacing.xl,
+      gap: spacing.sm,
+    },
+    emptyCoachTitle: {
+      fontFamily: fonts.bodyBold,
+      fontSize: 16,
+      color: colors.text,
+      textAlign: 'center',
+    },
+    emptyCoachText: {
+      fontFamily: fonts.body,
+      fontSize: 14,
+      lineHeight: 21,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      maxWidth: 320,
+    },
+  });
+}
