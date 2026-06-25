@@ -12,6 +12,7 @@ type PanelProps = {
   headerRight?: ReactNode;
   padding?: number;
   style?: ViewStyle;
+  contentStyle?: ViewStyle;
   variant?: 'default' | 'elevated' | 'inset';
 };
 
@@ -22,6 +23,7 @@ export function Panel({
   headerRight,
   padding = spacing.xl,
   style,
+  contentStyle,
   variant = 'default',
 }: PanelProps) {
   const hasHeader = Boolean(title || subtitle || headerRight);
@@ -44,7 +46,15 @@ export function Panel({
           {headerRight}
         </View>
       ) : null}
-      <View style={{ padding, paddingTop: hasHeader ? spacing.md : padding }}>{children}</View>
+      <View
+        style={[
+          styles.body,
+          { padding, paddingTop: hasHeader ? spacing.md : padding },
+          contentStyle,
+        ]}
+      >
+        {children}
+      </View>
     </View>
   );
 }
@@ -64,6 +74,9 @@ const styles = StyleSheet.create({
   inset: {
     backgroundColor: colors.backgroundElevated,
     borderColor: colors.border,
+  },
+  body: {
+    width: '100%',
   },
   header: {
     flexDirection: 'row',

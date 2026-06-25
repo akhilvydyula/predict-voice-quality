@@ -14,7 +14,6 @@ import { PracticePlanPanel } from '../../src/components/PracticePlanPanel';
 import { ScoreRing } from '../../src/components/ScoreRing';
 import { SessionSummaryCard } from '../../src/components/SessionSummaryCard';
 import { SingerInsightsPanel } from '../../src/components/SingerInsightsPanel';
-import { GlassCard } from '../../src/components/ui/GlassCard';
 import { PageHeader } from '../../src/components/ui/PageHeader';
 import { PrimaryButton } from '../../src/components/ui/PrimaryButton';
 import { Screen } from '../../src/components/ui/Screen';
@@ -98,7 +97,7 @@ export default function SessionScreen() {
       <LiveAgentBanner guidance={liveGuidance} />
 
       {/* Stage card */}
-      <GlassCard glow padding={spacing.xl} style={styles.stage}>
+      <View style={styles.stageShell}>
         {devMode && flags.showLiveOverlay && isActive ? (
           <DevDebugOverlay telemetry={telemetry} pitch={pitch} />
         ) : null}
@@ -114,13 +113,10 @@ export default function SessionScreen() {
 
         <ScoreRing score={metrics.overall} />
 
-        {/* Status hint */}
         <View style={styles.hintRow}>
           {isActive ? <View style={styles.liveDot} /> : null}
           <Text style={styles.stageHint}>
-            {isActive
-              ? 'Score updates as you sing'
-              : 'Ready to start'}
+            {isActive ? 'Score updates as you sing' : 'Ready to start'}
           </Text>
         </View>
 
@@ -130,7 +126,7 @@ export default function SessionScreen() {
           onPress={() => (isActive ? void stop() : void start())}
           style={styles.recordButton}
         />
-      </GlassCard>
+      </View>
 
       {/* Tab switcher */}
       <SegmentedTabs
@@ -206,17 +202,25 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     color: colors.danger,
   },
-  stage: {
+  stageShell: {
+    width: '100%',
+    alignSelf: 'center',
     alignItems: 'center',
     gap: spacing.lg,
-    width: '100%',
-    maxWidth: layout.maxContentWidth,
-    alignSelf: 'center',
+    padding: spacing.xl,
     paddingVertical: spacing.xxl,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.borderStrong,
+    backgroundColor: colors.surfaceElevated,
+    position: 'relative',
+    overflow: 'hidden',
   },
   hintRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
     gap: spacing.xs,
   },
   liveDot: {
@@ -231,7 +235,6 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   recordButton: {
-    alignSelf: 'center',
     width: '100%',
     maxWidth: layout.maxActionWidth,
     marginTop: spacing.xs,

@@ -8,6 +8,7 @@ import { spacing } from '../../theme/spacing';
 type GlassCardProps = {
   children: ReactNode;
   style?: ViewStyle;
+  contentStyle?: ViewStyle;
   glow?: boolean;
   padding?: number;
   title?: string;
@@ -18,6 +19,7 @@ type GlassCardProps = {
 export function GlassCard({
   children,
   style,
+  contentStyle,
   glow = false,
   padding = spacing.lg,
   title,
@@ -28,6 +30,7 @@ export function GlassCard({
       title={title}
       subtitle={subtitle}
       padding={padding}
+      contentStyle={contentStyle}
       variant={glow ? 'elevated' : 'default'}
       style={StyleSheet.flatten([glow && styles.highlight, style])}
     >

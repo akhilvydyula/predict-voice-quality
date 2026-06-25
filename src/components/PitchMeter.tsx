@@ -83,6 +83,10 @@ const styles = StyleSheet.create({
   },
   note: {
     ...typography.metric,
+    fontSize: 40,
+    lineHeight: 44,
+    textAlign: 'center',
+    width: '100%',
   },
   freq: {
     ...typography.bodySmall,
@@ -90,6 +94,8 @@ const styles = StyleSheet.create({
   },
   laneOuter: {
     width: '100%',
+    maxWidth: LANE_WIDTH,
+    alignSelf: 'center',
     gap: spacing.sm,
   },
   lane: {
