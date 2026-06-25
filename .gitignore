@@ -5,6 +5,8 @@ node_modules/
 
 # Expo
 .expo/
+.expo-web-check/
+.expo-web-check*/
 dist/
 web-build/
 expo-env.d.ts
@@ -39,3 +41,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# wrangler
+.wrangler/
