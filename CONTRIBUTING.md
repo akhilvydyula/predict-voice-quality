@@ -25,6 +25,15 @@ npm install --prefix server
 npm run api
 ```
 
+Configure locally before committing:
+
+```bash
+git config user.name "Akhil Vydyula"
+git config user.email "35249770+akhilvydyula@users.noreply.github.com"
+```
+
+Push from the [@akhilvydyula](https://github.com/akhilvydyula) GitHub account only. See [AUTHORS.md](AUTHORS.md).
+
 ## Before you open a PR
 
 1. **Scope** — One logical change per PR (feature, fix, or docs).

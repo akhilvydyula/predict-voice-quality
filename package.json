@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "VocalIQ — open-source real-time vocal training with pitch feedback, scoring, coaching, and analytics (Expo / React Native)",
   "license": "MIT",
-  "author": "Akhil Vydyula (https://github.com/akhilvydyula)",
+  "author": "Akhil Vydyula",
+  "contributors": [
+    "Akhil Vydyula <35249770+akhilvydyula@users.noreply.github.com> (https://github.com/akhilvydyula)"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/akhilvydyula/predict-voice-quality.git"

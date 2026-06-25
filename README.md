@@ -142,6 +142,9 @@ This project is **MIT licensed** — free to use, modify, and distribute.
 
 | Resource | Link |
 |----------|------|
+| **Maintainer** | [Akhil Vydyula](https://github.com/akhilvydyula) |
+| Authors & git attribution | [AUTHORS.md](./AUTHORS.md) |
+| Contributors | [CONTRIBUTORS.md](./CONTRIBUTORS.md) |
 | Full inventory (code, docs, images, deps) | [docs/OPEN_SOURCE_INVENTORY.md](./docs/OPEN_SOURCE_INVENTORY.md) |
 | Third-party licenses | [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) |
 | Contributing | [CONTRIBUTING.md](./CONTRIBUTING.md) |
