@@ -27,9 +27,11 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+*.log
 
-# macOS
+# macOS / Windows
 .DS_Store
+Thumbs.db
 *.pem
 
 # local env files
@@ -42,5 +44,9 @@ yarn-error.*
 /ios
 /android
 
-# wrangler
+# wrangler / cloudflare
 .wrangler/
+
+# editor / agent local config
+.claude/
+.cursor/
