@@ -1,1 +1,4 @@
+/assets/*  /assets/:splat  200
+/_expo/*   /_expo/:splat   200
+/favicon.ico  /favicon.ico  200
 /*    /index.html   200
