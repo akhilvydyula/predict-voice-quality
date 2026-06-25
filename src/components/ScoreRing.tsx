@@ -49,7 +49,7 @@ export function ScoreRing({ score, size = 168 }: ScoreRingProps) {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke={colors.surface}
+            stroke={colors.backgroundElevated}
             strokeWidth={stroke}
             fill="none"
           />

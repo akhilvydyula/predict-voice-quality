@@ -122,9 +122,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   tabActive: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.primarySoft,
     borderWidth: 1,
-    borderColor: colors.borderStrong,
+    borderColor: colors.primary,
   },
   label: {
     ...typography.tabLabel,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   labelActive: {
-    color: colors.text,
+    color: colors.primary,
     fontFamily: typography.bodyBold.fontFamily,
   },
 });

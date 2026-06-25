@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { colors } from '../../theme/colors';
 import { radius, spacing } from '../../theme/spacing';
@@ -33,13 +33,14 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     minWidth: 140,
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.xl,
     gap: spacing.xs,
     overflow: 'hidden',
+    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
   },
   accentBar: {
     position: 'absolute',

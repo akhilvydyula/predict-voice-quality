@@ -72,7 +72,7 @@ export function PrimaryButton({
 
 const styles = StyleSheet.create({
   wrap: {
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     minHeight: 52,
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.xxxl,
@@ -85,13 +85,13 @@ const styles = StyleSheet.create({
     borderColor: '#0052CC',
   },
   secondary: {
-    backgroundColor: 'transparent',
+    backgroundColor: colors.surface,
     borderColor: colors.borderStrong,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   danger: {
     backgroundColor: colors.danger,
-    borderColor: '#CC2222',
+    borderColor: '#DC2626',
   },
   label: {
     fontFamily: typography.bodyBold.fontFamily,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   labelPrimary: {
-    color: colors.text,
+    color: colors.textOnPrimary,
   },
   labelSecondary: {
     color: colors.primary,

@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     marginLeft: -11,
     top: 15,
     borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.35)',
+    borderColor: colors.borderStrong,
   },
   laneLabels: {
     flexDirection: 'row',

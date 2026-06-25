@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 import { DevDebugOverlay } from '../../src/components/dev/DevDebugOverlay';
 import { AdvancedAnalyticsPanel } from '../../src/components/AdvancedAnalyticsPanel';
@@ -209,12 +209,13 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
     padding: spacing.xl,
     paddingVertical: spacing.xxl,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: colors.borderStrong,
-    backgroundColor: colors.surfaceElevated,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     position: 'relative',
     overflow: 'hidden',
+    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
   },
   hintRow: {
     flexDirection: 'row',

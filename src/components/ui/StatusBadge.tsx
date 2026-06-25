@@ -15,7 +15,7 @@ const TONE_STYLES = {
   success: { bg: colors.successSoft, text: colors.success, border: 'rgba(0, 200, 83, 0.25)', dot: colors.success },
   warning: { bg: colors.warningSoft, text: colors.warning, border: 'rgba(255, 165, 0, 0.25)', dot: colors.warning },
   danger: { bg: colors.dangerSoft, text: colors.danger, border: 'rgba(255, 68, 68, 0.25)', dot: colors.danger },
-  info: { bg: colors.primarySoft, text: colors.primaryBright, border: 'rgba(0, 102, 255, 0.25)', dot: colors.primaryBright },
+  info: { bg: colors.primarySoft, text: colors.primary, border: 'rgba(0, 102, 255, 0.25)', dot: colors.primary },
 } as const;
 
 export function StatusBadge({ label, tone = 'default' }: StatusBadgeProps) {

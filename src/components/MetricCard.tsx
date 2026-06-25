@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../theme/colors';
 import { radius, spacing } from '../theme/spacing';
@@ -68,14 +68,15 @@ export function MetricCard({ label, value, icon }: MetricCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
     padding: spacing.xl,
     borderWidth: 1,
     borderColor: colors.border,
     flex: 1,
     minWidth: '46%',
     gap: spacing.sm,
+    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
   },
   topRow: {
     flexDirection: 'row',

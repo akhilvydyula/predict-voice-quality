@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { colors } from '../../theme/colors';
 import { radius, spacing } from '../../theme/spacing';
@@ -61,11 +61,12 @@ export function Panel({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surface,
     overflow: 'hidden',
+    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
   },
   elevated: {
     backgroundColor: colors.surfaceElevated,

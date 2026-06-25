@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     ...typography.overline,
-    color: colors.accent,
+    color: colors.primary,
     fontSize: 10,
   },
   title: {

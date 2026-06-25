@@ -1,5 +1,5 @@
 import { useRouter, type Href } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Platform, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { buildDashboardMetrics } from '../../src/analytics/sessionAnalytics';
@@ -104,13 +104,13 @@ export default function DashboardScreen() {
           style={({ pressed }) => [styles.heroCta, pressed && styles.heroCtaPressed]}
         >
           <View style={styles.heroCtaIcon}>
-            <Ionicons name="mic" size={28} color={colors.text} />
+            <Ionicons name="mic" size={28} color={colors.textOnPrimary} />
           </View>
           <View style={styles.heroCtaCopy}>
             <Text style={styles.heroCtaTitle}>Start your first session</Text>
             <Text style={styles.heroCtaSubtitle}>Tap to sing and get instant feedback</Text>
           </View>
-          <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+          <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.7)" />
         </Pressable>
       ) : null}
 
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   heroCtaTitle: {
     ...typography.bodyBold,
     fontSize: 16,
-    color: colors.text,
+    color: colors.textOnPrimary,
   },
   heroCtaSubtitle: {
     ...typography.bodySmall,
@@ -274,9 +274,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.surface,
     padding: spacing.lg,
     gap: spacing.sm,
+    ...(Platform.OS === 'web' ? ({ boxShadow: colors.shadow } as object) : {}),
   },
   actionCardPressed: {
     backgroundColor: colors.surfaceHover,
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
   },
   link: {
     ...typography.bodySmall,
-    color: colors.accent,
+    color: colors.primary,
     fontFamily: typography.bodyBold.fontFamily,
   },
 });
