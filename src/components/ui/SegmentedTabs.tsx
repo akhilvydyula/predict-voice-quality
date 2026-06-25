@@ -2,6 +2,7 @@ import * as Haptics from 'expo-haptics';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../theme/colors';
+import { layout } from '../../theme/layout';
 import { radius, spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 
@@ -54,6 +55,9 @@ export function SegmentedTabs<T extends string>({
 const styles = StyleSheet.create({
   track: {
     flexDirection: 'row',
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: layout.maxSegmentedWidth,
     backgroundColor: colors.surface,
     borderRadius: radius.pill,
     padding: spacing.xs,
@@ -75,6 +79,9 @@ const styles = StyleSheet.create({
   },
   scrollTrack: {
     flexDirection: 'row',
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: layout.maxSegmentedWidth,
     gap: spacing.xs,
     backgroundColor: colors.surface,
     borderRadius: radius.pill,

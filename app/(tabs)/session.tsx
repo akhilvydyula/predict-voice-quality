@@ -24,6 +24,7 @@ import { StatusBadge } from '../../src/components/ui/StatusBadge';
 import { useDevMode } from '../../src/context/DevModeContext';
 import { useVoiceSession } from '../../src/context/VoiceAnalysisContext';
 import { colors } from '../../src/theme/colors';
+import { layout } from '../../src/theme/layout';
 import { spacing } from '../../src/theme/spacing';
 import { typography } from '../../src/theme/typography';
 
@@ -193,6 +194,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.lg,
     position: 'relative',
+    width: '100%',
+    maxWidth: layout.maxContentWidth,
+    alignSelf: 'center',
   },
   scoreWrap: {
     marginTop: spacing.sm,
@@ -202,7 +206,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   recordButton: {
-    alignSelf: 'stretch',
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: layout.maxActionWidth,
     marginTop: spacing.sm,
   },
   panel: {

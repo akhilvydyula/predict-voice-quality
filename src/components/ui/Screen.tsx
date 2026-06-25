@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors } from '../../theme/colors';
+import { layout } from '../../theme/layout';
 import { spacing } from '../../theme/spacing';
 
 type ScreenProps = {
@@ -54,9 +55,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.tabBar + spacing.xl,
+    alignItems: 'center',
+    paddingBottom: spacing.tabBar + spacing.xxxl + spacing.lg,
   },
   padded: {
+    width: '100%',
+    maxWidth: layout.maxContentWidth,
     paddingHorizontal: spacing.screen,
     paddingTop: spacing.lg,
     gap: spacing.lg,
